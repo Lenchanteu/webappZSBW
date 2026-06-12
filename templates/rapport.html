@@ -1,0 +1,870 @@
+{% extends "base.html" %}
+
+{% block title %}Generate Fire Prevention Report{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<style>
+    /* Main document styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        font-size: 12pt;
+        color: #000;
+        line-height: 1.5;
+        margin: 0;
+        padding: 20px;
+    }
+
+    /* Header styles */
+    .header {
+        font-size: 10pt;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .header-left {
+        flex: 1;
+    }
+
+    .header-right {
+        text-align: right;
+    }
+
+    .page-number {
+        font-weight: bold;
+    }
+
+    /* Title section */
+    .title-section {
+        text-align: center;
+        margin: 30px 0;
+    }
+
+    .title-section h1 {
+        font-size: 18pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .title-section .reference {
+        font-size: 12pt;
+        margin-bottom: 5px;
+    }
+
+    .title-section .address {
+        font-size: 11pt;
+    }
+
+    /* Section styles */
+    .section {
+        margin-top: 25px;
+        margin-bottom: 20px;
+    }
+
+    .section h2 {
+        font-size: 14pt;
+        font-weight: bold;
+        border-bottom: 1px solid #000;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+    }
+
+    .section h3 {
+        font-size: 12pt;
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+    /* Form row styling */
+    .form-row {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-label {
+        display: inline-block;
+        width: 250px;
+        font-weight: normal;
+    }
+
+    .form-input {
+        border-bottom: 1px solid #000;
+        width: 200px;
+        display: inline-block;
+        height: 1.5em;
+        margin-right: 15px;
+    }
+
+    .form-checkbox {
+        width: auto;
+        margin-right: 10px;
+    }
+
+    /* Checkbox list styling */
+    .checkbox-list {
+        list-style: none;
+        padding-left: 0;
+        margin: 10px 0;
+    }
+
+    .checkbox-list li {
+        margin-bottom: 8px;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .checkbox-list li::before {
+        content: "☐";
+        display: inline-block;
+        width: 1em;
+        margin-right: 0.5em;
+        font-size: 12pt;
+    }
+
+    .checkbox-list li.checked::before {
+        content: "☑";
+    }
+
+    /* Table styling */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+        font-size: 11pt;
+    }
+
+    table th, table td {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    /* Footer styling */
+    .footer {
+        font-size: 10pt;
+        text-align: right;
+        border-top: 1px solid #ccc;
+        margin-top: 40px;
+        padding-top: 10px;
+        font-family: 'Arial', sans-serif;
+    }
+
+    /* Button styling */
+    .form-actions {
+        margin-top: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14pt;
+        text-decoration: none;
+        margin: 0 10px;
+    }
+
+    .btn:hover {
+        background-color: #45a049;
+    }
+
+    .btn-secondary {
+        background-color: #f44336;
+    }
+
+    .btn-secondary:hover {
+        background-color: #d32f2f;
+    }
+
+    /* Preview section */
+    .preview-section {
+        margin: 40px 0;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 8px;
+    }
+
+    .preview-title {
+        font-size: 16pt;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #2c3e50;
+    }
+
+    .pdf-preview {
+        background: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        min-height: 200px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+    }
+
+    .file-info {
+        background: #fff3e0;
+        padding: 15px;
+        border-radius: 5px;
+        border-left: 4px solid #ff9800;
+    }
+
+    /* Success message */
+    .success-message {
+        color: #2e7d32;
+        font-weight: bold;
+        font-size: 14pt;
+        margin: 20px 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title-section">
+        <h1>Rapport de prévention incendie</h1>
+    </h1>
+
+    <div class="form-section">
+
+        <form id="fireReportForm" action="/generate-fire-report" method="POST">
+            <div class="form-row">
+                <label class="form-label">Chapiteau :</label>
+                <span>Oui <input type="radio" class="form-checkbox" name="chapiteau" value="oui" {% if chapiteau == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="chapiteau" value="non" {% if chapiteau == 'non' %}checked{% endif %}></span>
+                <span>Nombre : <input type="number" class="form-input" name="chapiteau_nombre" value="{{ chapiteau_nombre }}"></span>
+                <span>Taille : <input type="text" class="form-input" name="chapiteau_taille" value="{{ chapiteau_taille }}"></span>
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Tente(s) :</label>
+                <span>Oui <input type="radio" class="form-checkbox" name="tentes" value="oui" {% if tentes == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="tentes" value="non" {% if tentes == 'non' %}checked{% endif %}></span>
+                <span>Nombre : <input type="number" class="form-input" name="tentes_nombre" value="{{ tentes_nombre }}"></span>
+                <span>Taille : <input type="text" class="form-input" name="tentes_taille" value="{{ tentes_taille }}"></span>
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Gradins :</label>
+                <span>Oui <input type="radio" class="form-checkbox" name="gradins" value="oui" {% if gradins == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="gradins" value="non" {% if gradins == 'non' %}checked{% endif %}></span>
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Structures aériennes :</label>
+                <span>Oui <input type="radio" class="form-checkbox" name="structures_aériennes" value="oui" {% if structures_aériennes == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="structures_aériennes" value="non" {% if structures_aériennes == 'non' %}checked{% endif %}></span>
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Barbecue :</label>
+                <span>Oui <input type="radio" class="form-checkbox" name="barbecue" value="oui" {% if barbecue == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="barbecue" value="non" {% if barbecue == 'non' %}checked{% endif %}></span>
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Scène :</label>
+                <span>Oui <input type="radio" class="form-checkbox" name="scene" value="oui" {% if scene == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="scene" value="non" {% if scene == 'non' %}checked{% endif %}></span>
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Chauffage :</label>
+                <span>Oui <input type="radio" class="form-checkbox" name="chauffage" value="oui" {% if chauffage == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="chauffage" value="non" {% if chauffage == 'non' %}checked{% endif %}></span>
+            </div>
+            <div class="form-row">
+                <label class="form-label">Points de cuisson :</label>
+                <span>Oui <input type="radio" class="form-checkbox" name="points_de_cuisson" value="oui" {% if points_de_cuisson == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="points_de_cuissons" value="non" {% if points_de_cuisson == 'non' %}checked{% endif %}></span>
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Date:</label>
+                <input type="date" class="form-input" name="date" value="{{ date }}">
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Nº GSM du responsable en cas d'incidents :</label>
+                <input type="tel" class="form-input" name="responsable" value="{{ responsable }}">
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Visite effectuée le :</label>
+                <input type="date" class="form-input" name="date_visite" value="{{ date_visite }}">
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Heure début :</label>
+                <input type="time" class="form-input" name="heure_debut_visite" value="{{ heure_debut_visite }}">
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Heure fin :</label>
+                <input type="time" class="form-input" name="heure_fin_visite" value="{{ heure_fin_visite }}">
+            </div>
+            
+            <div class="form-row">
+                <label class="form-label">Nom du controlleur :</label>
+                <input type="text" class="form-input" name="nom_controlleur" value="{{ nom_controlleur }}">
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Adresse de facturation :</label>
+                <input type="text" class="form-input" name="adrs_facture" value="{{ adrs_facture }}">
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">E-mail pour l'envoi du rapport :</label>
+                <input type="email" class="form-input" name="email_envoi_rapport" value="{{ email_envoi_rapport }}">
+            </div>
+
+            <h3>Moyens de prévention prévus :</h3>
+            <ul class="checkbox-list">
+                <li>
+                    <span>Issues : Nombre : <input type="number" class="form-input" name="issues_nombre" value="{{ issues_nombre }}" style="width: 50px;"> - largeurs : <input type="text" class="form-input" name="issues_largeur" value="{{ issues_largeur }}" style="width: 50px;"></span>
+                </li>
+                <li>
+                    <span>Extincteur(s) : Oui <input type="radio" class="form-checkbox" name="extincteurs" value="oui" {% if extincteurs == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="extincteurs" value="non" {% if extincteurs == 'non' %}checked{% endif %}> Nombre : <input type="text" class="form-input" name="extincteurs_nombre" value="{{ extincteurs_nombre }}" style="width: 50px;"></span>
+                </li>
+                <li>
+                    <span>Eclairage de sécurité : Oui <input type="radio" class="form-checkbox" name="eclairage_securite" value="oui" {% if eclairage_securite == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="eclairage_securite" value="non" {% if eclairage_securite == 'non' %}checked{% endif %}></span>
+                </li>
+                <li>
+                    <span>Pictogrammes d'évacuation : Oui <input type="radio" class="form-checkbox" name="pictogrammes" value="oui" {% if pictogrammes == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="pictogrammes" value="non" {% if pictogrammes == 'non' %}checked{% endif %}></span>
+                </li>
+                <h4>Documents transmis :</h4>
+                <li>
+                    <span>PV de classement des toiles : Oui <input type="radio" class="form-checkbox" name="PV_toiles" value="oui" {% if PV_toiles == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="PV_toiles" value="non" {% if PV_toiles == 'non' %}checked{% endif %}></span>
+                </li>
+                <li>
+                    <span>PV de contrôle installation électrique : Oui <input type="radio" class="form-checkbox" name="PV_electr" value="oui" {% if PV_electr == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="PV_electr" value="non" {% if PV_electr == 'non' %}checked{% endif %}></span>
+                </li>
+                <li>
+                    <span>PV de contrôle stabilité structures : Oui <input type="radio" class="form-checkbox" name="PV_struct" value="oui" {% if PV_struct == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="PV_struct" value="non" {% if PV_struct == 'non' %}checked{% endif %}></span>
+                </li>
+                
+            </ul>
+            <h2>Prescriptions :</h2>
+            <h3>B. Implantation</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.B.1 Accès libre aux installations (voiries d'accès dégagées - H et L = 4m - distance max. 60m - capacité portante suffisante)<input type="radio" class="form-checkbox" name="it_3B1" value="oui" {% if it_3B1 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="it_3B1" value="non" {% if it_3B1 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.B.2	Accès libre aux bâtiments existants (voiries d’accès dégagées & largeur min.= 4m)<input type="radio" class="form-checkbox" name="it_3B2" value="oui" {% if it_3B2 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="it_3B2" value="non" {% if it_3B2 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.B.3	Espace minimum de 6 m autour des installations à risque (friteries, cuisines, groupe électrogène, chauffage, etc). Cuisines à min. 2m si chapiteau de plus de 250 m².<input type="radio" class="form-checkbox" name="it_3B3" value="oui" {% if it_3B3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="it_3B3" value="non" {% if it_3B3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.B.4	Espace minimum respectés : 
+                        - entre bâtiments existants et installations prévues 
+                        - entre les différentes installations prévues.<input type="radio" class="form-checkbox" name="it_3B4" value="oui" {% if it_3B4 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="it_3B4" value="non" {% if it_3B4 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.B.5	En cas de sécheresse : zone débroussaillée d’au moins 6m autour des installations si proximité terrain boisé ou recouvert de végétation.<input type="radio" class="form-checkbox" name="it_3B5" value="oui" {% if it_3B5 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="it_3B5" value="non" {% if it_3B5 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>C. Ressources en eau</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.C.1	Ressources en eau existantes : repérées, signalées et dégagées<input type="radio" class="form-checkbox" name="it_3C1" value="oui" {% if it_3C1 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C1" value="non" {% if 3C1 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.C.2	Aucune installation à moins de 60cm des ressources en eau.<input type="radio" class="form-checkbox" name="it_3C2" value="oui" {% if it_3C2 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="it_3C2" value="non" {% if it_X3C2 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.C.3	Ressources en eau la plus proche à maximum 200m<input type="radio" class="form-checkbox" name="it_3C3" value="oui" {% if it_3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if it_3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>D. Eléments structurels des installations</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.2	Structures couvertes de plus de 50 m² conformes aux prescriptions de la norme NBN EN 13782.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.3	Structures de plus de 250 m², contrôle par un organisme de contrôle accrédité en stabilité. <input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.4	None<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.5	Evacuation de l’installation si les vents atteignent ou dépassent une vitesse de 100 km/h.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.6	Arrimage & haubanage obligatoires pour installations de + de 24h ou si vents de 60 km/h ou plus.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>E. Aménagements structurels intérieurs ou extérieurs</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.E.1	Structures portantes conformes aux Eurocodes 1.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.E.2	Gradins et tribunes conformes aux NBN EN 13200.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span> 3.E.3	Structures accueillant plus de 50 pers. ou à plus 1,2m du sol, contrôle par un organisme accrédité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.E.4	Escalade des structures interdite par barrières, toiles sur une hauteur de 2,5m, service de gardiennage.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.E.5	Dessous des installations (gradins, scènes) rendus inaccessibles au public – pas de stockage<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.E.6 Assise horizontale pour les installations supportant du public - qualité du sol.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.E.7	Gradins, planchers, escaliers: doivent supporter une charge d'exploitation de 4 kN/m2 min.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.E.8	Structures accueillant plus de 50 pers. ou à plus 120 cm du sol, présence d’un garde-corps : continu, hauteur 1,1m, suffisamment résistant aux efforts horizontaux.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.E.9	Volées d’escaliers « droites ».<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.E.10	Volées et paliers des escaliers : présence de mains courantes.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.E.11	Marches des escaliers : profondeur 24cm, hauteur entre 17cm et 20, contremarches recommandées.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.E.12	Voies de circulation antidérapantes.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.E.13	Pour installations extérieures, 40 places maxi entre 2 rangées – 20 places maxi si allée sur un seul côté.
+                                    Pour installations intérieures, 28 places maxi entre 2 rangées – 14 places maxi si allée sur un seul côté<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.E.14	Pour les gradins équipés de places assises avec sièges individuels, dimensions suivantes seront respectées :
+-	80cm d’entre-axe recommandé entre chaque rangée (gradin) constituant la tribune sans descendre sous le 70cm ;
+-	50 cm d’entre-axe recommandé entre chaque place particulière situées sur même rangée sans descendre sous les 45cm ;
+-	40 cm pour la largeur libre de passage (distance entre dossier du siège précédent et le bord du siège suivant)
+-	40 cm pour la profondeur du siège sans descendre sous les 35cm.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.E.15	Si plus de 15 rangées, présence d’un escalier au milieu ou à l’arrière (largeur min. de 120 cm et proportionnelle à la moitié de la capacité x 1,25).<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>F.	Précautions contre l’incendie</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.F.1	Toile des tentes et chapiteaux : incombustible ou difficilement inflammable – Attestation à fournir.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.F.2	Revêtement flottants et ornements : incombustibles ou difficilement inflammables. 1.17 L'emploi de vélums et autres draperies disposées horizontalement est interdit.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.F.3	Matériaux de décoration difficilement inflammables, pas de gouttes enflammées, dégagement de fumée limité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.F.4	A l’intérieur, interdiction de ballonnets avec gaz inflammable ou toxique ou ornements inflammables.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span> 3.F.5	Les restes de papiers, matériaux, emballages vides et déchets inflammables doivent être enlevés sur-le-champ et déposés à l'extérieur en des endroits situés à minimum six mètres des installations.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.F.6 None<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.F.7	Véhicules exposés : carburant max. niveau réserve, batterie déconnectée.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>G.	Evacuation – dégagements, sorties et sorties de secours</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.G.1	La densité totale théorique d'occupation est déterminée en cumulant :
+-	le nombre de personnes assises sur des sièges individuels ;
+-	pour personnes assises : 1 personne par 50 cm ;
+-	pour personnes stationnant debout : 3 pers/m² pour espaces plans, 2 pers/m linéaire pour gradins ;<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.G.2	Le nombre de sorties suffisantes:
+-	de 1 à 50 personnes: une sortie,
+-	de 51 à 250 personnes : deux sorties,
+-	de 251 à 500 personnes: trois sorties,
+-	pour plus de 500 personnes: 1 sortie supplémentaire par tranche de 500 personnes supplémentaires ou fraction de ce nombre. Ces sorties doivent être éloignées le plus possible l'une de l'autre. La distance maximale pour atteindre une issue ne sera pas supérieure à 30 mètres.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.G.3	Maximum 30 mètres à parcourir pour atteindre une issue:<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.G.3	Sorties aboutissent directement à la voie publique ou à un espace situé à l'air libre et permettant d'atteindre aisément la voie publique. Les sorties ne passent pas par d'autres installations voisines.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.G.4	Sorties et voies d’évacuation dégagées<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.G.5	Issues dans paroi rigide : portes battantes – s’ouvrant dans le sens de l'évacuation – non verrouillées.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.G.6	Issues dans parois bâchées : toiles peuvent être pendantes mais ne peuvent en aucun cas être maintenues attachées sur les côtés latéraux et inférieurs et doivent pouvoir être ouvertes facilement et immédiatement par toute personne. Il est conseillé de matérialiser le contour de ces issues au moyen de bandes autocollantes photoluminescentes de couleur contrastée.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.G.7	Largeur utile cumulée des issues au moins égale en cm au nombre de personnes. 
+Issues : largeur minimale de 80 cm et hauteur minimale de 200 cm.  <input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.G.8	Mobilier (guichets, bars, etc.) stable et n’empiétant pas sur les voies d’évacuation<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.G.10	Largeur couloirs séparant les stands (dans les foires commerciales) : min. de 2 mètres mais proportionnelle au nombre de personnes, à raison de 1cm par pers<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.G.11	Escaliers desservant les places de gradins doivent rester libres (pas de public debout).<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.G.12	La largeur des escaliers desservant des places de gradins (vomitoires) doit être calculée sur le temps nécessaire pour rejoindre un espace de sécurité en se basant sur les valeurs suivantes :
+-	Tous les spectateurs doivent atteindre un espace de sécurité en max. 8 min. en extérieur ou 2 min. en intérieur.
+-	Sur une surface plane, 	- 50 pers. doivent sortir sur une larg. de 1 unité de passage (80cm) en 1 min.
+	- 100 pers. doivent sortir sur une larg. de 2 unités de passage (120 cm) en 1 min.
+-	Sur une surface en gradins,	- 40 personnes doivent sortir sur une larg. de 1 unité de passage (80cm) en 1 min. 
+	-  80 personnes doivent sortir sur une larg. de 2 unités de passage (120cm) en 1 min;<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>H.	Signalisation</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.H.1	Présence de pictogrammes.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.H.2	Attention taille des pictogrammes adaptée à la distance de vision.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>I.	Installations électriques</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.I.1	Attestation de contrôle et de conformité des installations électriques par un organisme agréé.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.I.2	Pour l’éclairage et la décoration lumineuse des installations et des stands : uniquement électricité.
+Bougies tolérées si haut. < 10 cm + support incombustible + personne reste à proximité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.I.3	Conduites électriques parfaitement isolées – si fixées sur structure : fixations isolantes et non combustibles (donc pas de fixation métallique). <input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>J.	Eclairage de sécurité</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.J.1	Si occupation nocturne dans structure couverte : présence d’un éclairage de sécurité dans les voies d’évacuation et issues.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.J.2	Eclairage de sécurité conforme aux normes en vigueur.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.J.3	Eclairage de sécurité testé avant chaque occupation des lieux.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>K.	Equipements divers</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.K.1 Appareil producteur de force motrice ou sources d'énergie : à plus de 6m. des installations ou bâtiments existants<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.K.2 Réserve à carburant des appareils producteur de force motrice ou sources d'énergie : à plus de 6m. de ces appareils et des installations ou bâtiments existants.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>L.	Installations de Chauffage et de cuisson</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.L.1	A l’intérieur, présence interdite : récipients de gaz, réservoirs de liquides inflammables ou combustibles, friteuses,  appareils alimentés à l’alcool. <input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.2	Réserve de combustible dans un endroit sûr, à min. 6m des installations ou bâtiments - interdiction de fumer. <input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.3	Bouteilles de gaz stockées verticalement, max. 1 bouteille par point de chauffe. <input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.4	Bouteilles de gaz debout (pas couchées sur le flanc), pas en contrebas, au besoin attachées. <input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.5 None<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.6	Flexibles gaz : validité max. 5 ans. <input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.7	Flexibles gaz :  longueur max. 2m, pas en série. <input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.8	None<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.9	None<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.10 A l’intérieur, présence interdite :  appareils de chauffage à combustible liquide ou gazeux et braséros.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.11 Installations de chauffage à air chaud : placés à l’extérieur & à min 6 m. Gaines d’amenée d’air chaud incombustibles, dispositif d’arrêt automatique pour le ventilateur.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.12 None<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.13	Appareils de cuisson électriques :
+a)	Appareils porteurs du label CEBEC ou similaire.
+b)	Alimentés par des circuits avec terre, adaptés à la puissance des appareils.
+c)	Circuits protégés par disjoncteurs différentiels et autres protections thermiques adaptées aux puissances.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.14	Appareils de cuisson au gaz :
+a)	Détendeurs conçus pour le combustible utilisé et adaptés au type de bonbonnes en service. 
+b)	Flexibles datés de moins de cinq ans, adaptés au gaz utilisé et d'une longueur maximale de 2 mètres.
+c)	Bonbonnes éprouvées depuis moins de 10 ans, protégées des intempéries et des retombées incandescentes.
+d)	Dispositif de fermeture reste dégagé en permanence durant l'utilisation de l'appareil.
+e)	Implantation protégée des mouvements de foule et de tout accès à des personnes non autorisées.
+f)	Bonbonnes vides doivent être déplacées immédiatement et recouvertes de leur coiffe de protection.
+g)	Aucun stockage de bonbonnes pleines ou vides  toléré dans des voitures sises sur le site de la manifestation ou dans les sous-sols d'immeubles ou de lieux accessibles au public.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.L.15	BBQ : interdits à l’intérieur, situés à plus de 6m de toute installation ou bâtiment existant
+- Barbecue stable, éloigné de tout produit inflammable et placé dans une zone dégagée à l'extérieur.
+- Responsable barbecue désigné.
+- Public tenu à distance du barbecue (par exemple barrières Nadar). 
+- Pas de liquides Inflammables pour allumer ou raviver le BBQ.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>M.	Moyens de lutte contre l’incendie</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.M.1	Matériel en bon état - accessible – contrôlé – Signalé par pictogrammes conformes.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.M.2	Dans les installations couvertes : au moins un extincteur de 6 litres à eau pulvérisée avec additif ou de 6 kg  poudre par 150 m2 de superficie.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.M.3	Extincteur au CO2 de 5 kg à proximité des appareils de puissance électriques (sono, régie son, etc.)<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.M.4	Extincteur à proximité de chaque appareil de chauffage, point de cuisson ou BBQ.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>N.	Annonce - Alerte – Alarme</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.N.1	de préférence un téléphone fixe, sinon au minimum un téléphone mobile.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.N.1	Numéro d’urgence 112 affiché.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.N.2	Si plus de 1500 pers., présence d’une installation d’alarme.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>O.	Divertissements extrêmes</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.O.1	Analyse des risques - Contrôle des mesures par organisme accrédité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>P.	Tentes (de moins de 60 m²)</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.P.1	Situées à plus de 2 m des bâtiments existants (sauf si paroi EI 60)<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.P.2	Garanties de stabilité et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.P.3 Friteries, cuisines collectives, stands de petite restauration, à plus de 6 m des bâtiments existants
+Chaque friteries, cuisines collectives ou stands de petite restauration équipé d'au moins un extincteur<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.P.4	Absence de paille, foin, matières Inflammables à proximité des sources de chaleur.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.P.5	Eclairage protégé des chocs et projections de liquides; seule l’électricité est autorisée comme source d’énergie.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.P.6	L’éventuel chauffage au gaz ou combustible liquide sera placé à l’extérieur, appareils utilisant des liquides très facilement inflammables sont interdits.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                ç<li class="checked">
+                    <span>3.P.7	Matériaux constituant la toile de la tente ne pourront être facilement inflammable (au moins A3 -pas de nylon).<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.P.8	Une sortie de min. 80cm suffit pour max. 49 pers.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.P.9	Dans le cas d’installations bâchées, au droit des sorties, les toiles peuvent être maintenues pendantes mais ne peuvent en aucun cas être maintenues attachées sur les côtés latéraux et inférieurs et doivent pouvoir être ouvertes facilement et immédiatement par toute personne.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>Q.	Feux de joie extérieurs</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.Q.1	Présence de moyens d’extinction<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.Q.2	Protection du sol éventuelle<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.Q.3	None<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.Q.4	Public maintenu à distance (barrières nadar ou similaire) à min. 10m (à adapter selon la taille du foyer).<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.Q.5	Foyer à au moins 100m des bâtiments sauf si foyer limité ou dispositif pompier préventif.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>R.	Evénements (foule, concerts, soirées) en plein air</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.C.3	Ressources en eau la plus proche à maximum 200m<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.C.3	Ressources en eau la plus proche à maximum 200m<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.C.3	Ressources en eau la plus proche à maximum 200m<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.C.3	Ressources en eau la plus proche à maximum 200m<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h3>S.	Autres mesures diverses</h3>
+            <ul class="checkbox-list">
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.C.3	Ressources en eau la plus proche à maximum 200m<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.C.3	Ressources en eau la plus proche à maximum 200m<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+                <li class="checked">
+                    <span>3.D.1	Eléments en bon état d’entretien et de solidité.<input type="radio" class="form-checkbox" name="3C3" value="oui" {% if 3C3 == 'oui' %}checked{% endif %}> Non <input type="radio" class="form-checkbox" name="3C3" value="non" {% if 3C3 == 'non' %}checked{% endif %}></span>
+                </li>
+            </ul>
+
+            <h2>3. AVIS & CONCLUSIONS :</h2>
+
+            <div class="form-row">
+                <label class="form-label">Rapport :</label>
+                <span>Favorable <input type="radio" class="form-checkbox" name="rapport_status" value="favorable" {% if rapport_status == 'favorable' %}checked{% endif %}> Défavorable <input type="radio" class="form-checkbox" name="rapport_status" value="defavorable" {% if rapport_status == 'defavorable' %}checked{% endif %}></span>
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Absence de :</label>
+                <input type="text" class="form-input" name="absence_details" value="{{ absence_details }}" style="width: 500px;">
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Manquements constatés :</label>
+                <input type="text" class="form-input" name="manquements_points" value="{{ manquements_points }}" style="width: 500px;">
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Fait à :</label>
+                <input type="text" class="form-input" name="fait_a" value="{{ fait_a }}">
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Le :</label>
+                <input type="date" class="form-input" name="date_fait" value="{{ date_fait }}">
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Officier technicien en prévention :</label>
+                <input type="text" class="form-input" name="officier_technicien" value="{{ officier_technicien }}">
+            </div>
+
+            <p style="margin-top: 30px;">
+                <input type="checkbox" class="form-checkbox" name="copie_manifestation" value="true" {% if copie_manifestation %}checked{% endif %}> Copie transmise au responsable de la manifestation - par email<br>
+                <input type="checkbox" class="form-checkbox" name="copie_bourgmestre" value="true" {% if copie_bourgmestre %}checked{% endif %}> Copie transmise à M. le Bourgmestre - par télécopie<br>
+                <input type="checkbox" class="form-checkbox" name="copie_police" value="true" {% if copie_police %}checked{% endif %}> Copie transmise à la zone de Police - par télécopie
+            </p>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">Réinitialiser</button>
+                <button type="submit" class="btn">Générer et Sauvegarder le Rapport</button>
+            </div>
+
+            {% if success %}
+            <div class="success-message">
+                ✅ Rapport généré et sauvegardé avec succès !
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<script>
+    function resetForm() {
+        document.getElementById('fireReportForm').reset();
+        document.getElementById('previewSection').style.display = 'none';
+        // Remove success message if present
+        const successMessage = document.querySelector('.success-message');
+        if (successMessage) {
+            successMessage.remove();
+        }
+    }
+</script>
+{% endblock %}

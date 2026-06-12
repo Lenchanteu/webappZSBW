@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
 import sqlite3
 import hashlib
 import secrets
 import os
+import io
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
@@ -126,6 +127,10 @@ def logout():
     session.pop('uname', None)
     flash('You were logged out.', 'info')
     return redirect(url_for('home'))
+
+@app.route('/rapport')
+def rapport():
+    return render_template('rapport.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
