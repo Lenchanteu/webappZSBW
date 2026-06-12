@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+    <div class="register-container">
+        <h1>Create an Account</h1>
+        <form method="POST" action="{{ url_for('register') }}">
+            <div class="form-group">
+                <label for="uname">Username:</label>
+                <input type="text" id="uname" name="uname" required placeholder="Enter your username">
+            </div>
+            <div class="form-group">
+                <label for="pswd">Password:</label>
+                <input type="password" id="pswd" name="pswd" required placeholder="Enter your password">
+            </div>
+            <div class="form-group">
+                <label for="confirm_pswd">Confirm Password:</label>
+                <input type="password" id="confirm_pswd" name="confirm_pswd" required placeholder="Confirm your password">
+            </div>
+            <button type="submit" class="btn-register">Register</button>
+        </form>
+        <p class="login-link">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+    </div>
+{% endblock %}

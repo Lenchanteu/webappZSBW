@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Welcome, {{ session.get('uname') }}!</h1>
+    <p>This is your dashboard. You are logged in.</p>
+
+    <div class="card">
+        <h2>Your Stats</h2>
+        <p>Here are your statistics or recent activity.</p>
+    </div>
+
+    <div class="card">
+        <h2>Quick Actions</h2>
+        <ul>
+            <li><a href="#">Update Profile</a></li>
+            <li><a href="#">Change Password</a></li>
+            <li><a href="#">Settings</a></li>
+        </ul>
+    </div>
+{% endblock %}
