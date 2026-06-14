@@ -2,14 +2,23 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import sqlite3
 import hashlib
 import secrets
+from docxtpl import DocxTemplate
 import os
-import io
+from pdf_maker import convert_to_pdf
+from jinja2 import Environment
+from docxtpl import DocxTemplate
+
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
 
 # Path to database file
 DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database', 'credentials.db')
+TEMPLATE = "Rapport_de_prévention_incendie_template.docx"
+OUTPUT_DOCX = "generated_report.docx"
+OUTPUT_PDF = "generated_report.pdf"
+
+
 
 def init_db():
     """Initialize the database with required tables"""
@@ -132,5 +141,66 @@ def logout():
 def rapport():
     return render_template('rapport.html')
 
+@app.route("/generate-fire-report", methods=["POST"])
+def generate_report():
+
+    data = request.form.to_dict()
+    doc = DocxTemplate(TEMPLATE)
+    doc.render(
+    data,
+    jinja_env=Environment(
+        trim_blocks=True,
+        lstrip_blocks=True
+    )
+)
+    # List of checkbox fields
+    checkboxes = [
+        "chapiteau",
+        "tentes",
+        "gradins",
+        "scene",
+        "structures_aeriennes",
+        "chauffage",
+        "barbecue",
+        "points_de_cuissons",
+        "extincteurs",
+        "eclairage_securite",
+        "pictogrammes",
+        "PV_toiles",
+        "PV_electr",
+        "PV_struct",
+    ]
+
+    # Add all prescription checkboxes
+    for letter in "BCDEFGHIJKLMNPQR":
+        for i in range(1, 20):
+            checkboxes.append(f"it_3{letter}{i}")
+
+    # Convert HTML checkboxes to Python booleans
+    for field in checkboxes:
+        data[field] = field in request.form
+
+    # Fix template naming mismatch
+    if "tentes_nombre" in data:
+        data["tentes_nombres"] = data["tentes_nombre"]
+
+    # Load DOCX template
+    doc = DocxTemplate(TEMPLATE)
+
+    # Replace all Jinja variables
+    doc.render(data)
+
+    # Save DOCX
+    doc.save(OUTPUT_DOCX)
+
+    # Convert to PDF
+    convert_to_pdf(OUTPUT_DOCX)
+
+    return send_file(
+        OUTPUT_PDF,
+        as_attachment=True,
+        download_name="rapport_prevention_incendie.pdf",
+        mimetype="application/pdf"
+    )
 if __name__ == '__main__':
     app.run(debug=True)

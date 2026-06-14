@@ -1,33 +1,25 @@
-import tempfile, subprocess, os
+import pythoncom
+from docx2pdf import convert
+#import subprocess
+def convert_to_pdf(docx_file):
+    pythoncom.CoInitialize()
+    try:
+        convert(docx_file)
+    finally:
+        pythoncom.CoUninitialize()
 
-
-
-def latex_to_pdf(latex_code):
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tex_path = os.path.join(tmpdir, "document.tex")
-
-        # Write LaTeX
-        with open(tex_path, "w", encoding="utf-8") as f:
-            f.write(latex_code)
-
-        # Compile
-        result = subprocess.run(
-            [
-                "pdflatex",
-                "-interaction=nonstopmode",
-                "-output-directory",
-                tmpdir,
-                tex_path
-            ],
-            capture_output=True,
-            text=True
-        )
-
-        if result.returncode != 0:
-            raise Exception(result.stdout)
-
-        pdf_path = os.path.join(tmpdir, "document.pdf")
-
-        # Read PDF into memory before temp folder is deleted
-        with open(pdf_path, "rb") as pdf:
-            return pdf.read()
+"""Linux:
+def convert_to_pdf(docx_file):
+    
+    Converts DOCX to PDF using LibreOffice.
+    Works on Linux and Windows with LibreOffice installed.
+    
+    subprocess.run([
+        "soffice",
+        "--headless",
+        "--convert-to",
+        "pdf",
+        "--outdir",
+        ".",
+        docx_file
+    ], check=True)"""
