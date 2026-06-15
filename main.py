@@ -143,7 +143,6 @@ def rapport():
 
 @app.route("/generate-fire-report", methods=["POST"])
 def generate_report():
-
     data = request.form.to_dict()
     doc = DocxTemplate(TEMPLATE)
     doc.render(
@@ -202,5 +201,7 @@ def generate_report():
         download_name="rapport_prevention_incendie.pdf",
         mimetype="application/pdf"
     )
+
+
 if __name__ == '__main__':
     app.run(debug=True)

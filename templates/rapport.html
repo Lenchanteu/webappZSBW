@@ -835,9 +835,9 @@ La différence de largeur entre deux sorties n’excédera pas 3.5m.
                 <input type="checkbox" class="form-checkbox" name="copie_police" value="true" {% if copie_police %}checked{% endif %}> Copie transmise à la zone de Police - par télécopie
             </p>
 
-            <div class="form-actions">
+            <div class="form-actions" id="rapportForm">
                 <button type="button" class="btn btn-secondary" onclick="resetForm()">Réinitialiser</button>
-                <button type="submit" class="btn">Générer et Sauvegarder le Rapport</button>
+                <button type="submit" class="btn" onclick="generatePDF(event)">Générer et Sauvegarder le Rapport</button>
             </div>
 
             {% if success %}
@@ -845,6 +845,10 @@ La différence de largeur entre deux sorties n’excédera pas 3.5m.
                 ✅ Rapport généré et sauvegardé avec succès !
             </div>
             {% endif %}
+            <div id="loading-screen">
+                <div class="spinner"></div>
+                <p>Generating PDF...</p>
+            </div>
         </form>
     </div>
 </div>
@@ -858,6 +862,30 @@ La différence de largeur entre deux sorties n’excédera pas 3.5m.
         if (successMessage) {
             successMessage.remove();
         }
+    }
+    async function generatePDF(event) {
+        event.preventDefault();
+        const loading = document.getElementById("loading-screen");
+
+        loading.style.display = "flex";
+
+        const formData = new FormData(document.querySelector("form"));
+
+        const response = await fetch("/generate-fire-report", {
+            method: "POST",
+            body: formData
+        });
+
+        const blob = await response.blob();
+
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "rapport.pdf";
+        a.click();
+
+        loading.style.display = "none";
     }
 </script>
 {% endblock %}
