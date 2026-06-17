@@ -15,10 +15,15 @@ app.secret_key = secrets.token_hex(32)
 # Path to database file
 DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database', 'credentials.db')
 TEMPLATE = "Rapport_de_prévention_incendie_template.docx"
-OUTPUT_DOCX = "generated_report.docx"
-OUTPUT_PDF = "generated_report.pdf"
+DEFAULT_FILE_PATH = "C:/ProgramData/ZSBWApp"
 
 
+
+if not os.path.exists(DEFAULT_FILE_PATH):
+    
+    # if the demo_folder directory is not present 
+    # then create it.
+    os.makedirs(DEFAULT_FILE_PATH)
 
 def init_db():
     """Initialize the database with required tables"""
@@ -139,6 +144,10 @@ def logout():
 
 @app.route('/rapport')
 def rapport():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    if not os.path.exists(os.path.join(DEFAULT_FILE_PATH, session['uname'])):
+        os.makedirs(os.path.join(DEFAULT_FILE_PATH, session['uname']))
     return render_template('rapport.html')
 
 @app.route("/generate-fire-report", methods=["POST"])

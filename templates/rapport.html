@@ -845,10 +845,6 @@ La différence de largeur entre deux sorties n’excédera pas 3.5m.
                 ✅ Rapport généré et sauvegardé avec succès !
             </div>
             {% endif %}
-            <div id="loading-screen">
-                <div class="spinner"></div>
-                <p>Generating PDF...</p>
-            </div>
         </form>
     </div>
 </div>
@@ -862,30 +858,6 @@ La différence de largeur entre deux sorties n’excédera pas 3.5m.
         if (successMessage) {
             successMessage.remove();
         }
-    }
-    async function generatePDF(event) {
-        event.preventDefault();
-        const loading = document.getElementById("loading-screen");
-
-        loading.style.display = "flex";
-
-        const formData = new FormData(document.querySelector("form"));
-
-        const response = await fetch("/generate-fire-report", {
-            method: "POST",
-            body: formData
-        });
-
-        const blob = await response.blob();
-
-        const url = window.URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "rapport.pdf";
-        a.click();
-
-        loading.style.display = "none";
     }
 </script>
 {% endblock %}
