@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Generating Report...</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .loader {
+            text-align: center;
+        }
+
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 6px solid #444;
+            border-top: 6px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        p {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="loader">
+    <div class="spinner"></div>
+    <p>Generating your report...</p>
+</div>
+
+<script>
+const jobId = "{{ job_id }}";
+function go_back() {
+    window.location.href = `/rapport`;
+}
+async function checkStatus() {
+    const res = await fetch(`/job-status/${jobId}`);
+    const data = await res.json();
+    console.log(data);
+    if (data.status == "done") {
+        window.location.href = `/download/${jobId}`;
+        window.setTimeout(go_back, 1600);
+    } else {
+        setTimeout(checkStatus, 800);
+    }
+    console.log(data);
+}
+
+checkStatus();
+</script>
+
+</body>
+</html>

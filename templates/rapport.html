@@ -242,6 +242,29 @@
         font-size: 14pt;
         margin: 20px 0;
     }
+
+    #loading-screen {
+        position: fixed;
+        inset: 0;
+        display: none;
+
+        background: rgba(0, 0, 0, 0.75);
+
+        z-index: 2147483647;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        pointer-events: all;
+    }
+
+    #loading-frame {
+        width: 180px;
+        height: auto;
+        margin-bottom: 12px;
+    }
 </style>
 {% endblock %}
 
@@ -253,7 +276,7 @@
 
     <div class="form-section">
 
-        <form id="fireReportForm" action="/generate-fire-report" method="POST">
+        <form id="fireReportForm" onsubmit="generatePDF(event); return false;">
             <div class="form-row">
                 <label class="form-label">Concerne:</label>
                 <span><input type="text" class="form-input" name="concerne" value="{{ concerne }}"></span>
@@ -837,7 +860,7 @@ La différence de largeur entre deux sorties n’excédera pas 3.5m.
 
             <div class="form-actions" id="rapportForm">
                 <button type="button" class="btn btn-secondary" onclick="resetForm()">Réinitialiser</button>
-                <button type="submit" class="btn" onclick="generatePDF(event)">Générer et Sauvegarder le Rapport</button>
+                <button type="submit" class="btn">Générer et Sauvegarder le Rapport</button>
             </div>
 
             {% if success %}
@@ -845,18 +868,19 @@ La différence de largeur entre deux sorties n’excédera pas 3.5m.
                 ✅ Rapport généré et sauvegardé avec succès !
             </div>
             {% endif %}
-            <div id="loading-screen">
-                <div class="spinner"></div>
-                <p>Generating PDF...</p>
-            </div>
         </form>
     </div>
+    
 </div>
 
 <script>
     function resetForm() {
         document.getElementById('fireReportForm').reset();
-        document.getElementById('previewSection').style.display = 'none';
+        const preview = document.getElementById('previewSection');
+
+    if (preview) {
+        preview.style.display = 'none';
+    }
         // Remove success message if present
         const successMessage = document.querySelector('.success-message');
         if (successMessage) {
@@ -864,28 +888,19 @@ La différence de largeur entre deux sorties n’excédera pas 3.5m.
         }
     }
     async function generatePDF(event) {
-        event.preventDefault();
-        const loading = document.getElementById("loading-screen");
+    event.preventDefault();
 
-        loading.style.display = "flex";
+    const formData = new FormData(document.getElementById("fireReportForm"));
 
-        const formData = new FormData(document.querySelector("form"));
+    const res = await fetch("/start-report", {
+        method: "POST",
+        body: formData
+    });
 
-        const response = await fetch("/generate-fire-report", {
-            method: "POST",
-            body: formData
-        });
+    const data = await res.json();
 
-        const blob = await response.blob();
+    window.location.href = `/loading/${data.job_id}`;
+}
 
-        const url = window.URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "rapport.pdf";
-        a.click();
-
-        loading.style.display = "none";
-    }
 </script>
 {% endblock %}
