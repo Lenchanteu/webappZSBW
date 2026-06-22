@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Bug report{% endblock %}
+
+{% block content %}
+
+<h2>Report a Bug</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    <label>Description</label><br>
+    <textarea name="description" rows="10" cols="60" required></textarea>
+
+    <br><br>
+
+    <label>Capture d'écran (optionelle)</label><br>
+    <input type="file" name="screenshot" accept="image/*">
+
+    <input type="hidden" name="browser" id="browser">
+
+    <br><br>
+    <button type="submit">Envoyer le rapport de bug</button>
+</form>
+
+<script>
+document.getElementById("browser").value =
+    navigator.userAgent;
+</script>
+{% endblock %}
