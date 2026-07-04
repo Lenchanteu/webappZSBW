@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ERREUR{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <h1>Une erreur s'est produite</h1>
+        {% block content %}{% endblock %}
+        <p>Si vous pensez qu'il pourrait s'agir d'un bug, veuillez faire un rapport de bug ici: <a href="{{ url_for('report_bug') }}">Rapport de bug</a></p>
+        <p>Vous pouvez retourner à l'écran d'accueil en cliquant ici: <a href="{{ url_for('home') }}">Écran d'accueil</a></p>
+    </div>
+</body>
+</html>

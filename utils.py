@@ -2,15 +2,15 @@ import sqlite3
 import hashlib
 con = sqlite3.connect("database/credentials.db")
 cur = con.cursor()
-data = f'("Test", {hashlib.sha256(b'test').hexdigest()})'
 
 def create_table():
     cur.execute("""
     CREATE TABLE IF NOT EXISTS credentials (
         uname TEXT PRIMARY KEY,
         pswd TEXT NOT NULL,
-        email TEXT NOT NULL,
-        confirmed BOOl
+        email TEXT NOT NULL UNIQUE,
+        confirmed BOOl,
+        last_ip TEXT
     );
 """)
     con.commit()
@@ -27,6 +27,7 @@ def check_credentials(uname, pswd):
 def delete_table():
     cur.execute("DROP TABLE credentials")
     con.commit()
-def cad():
+
+def dac(): #create and delete table
     delete_table()
     create_table()

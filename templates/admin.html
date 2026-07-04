@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $('#KillServer').click(function(e) {
+            e.preventDefault();
+            $.get('/KillSwitch', function(data) {
+                console.log(data); // Outputs: Executed Successfully
+            });
+        });
+    });
+    async function updateConsole() {
+    const response = await fetch("/admin/logs");
+    const text = await response.text();
+
+    const consoleBox = document.getElementById("console");
+    consoleBox.textContent = text;
+
+    // Keep the view at the bottom
+    consoleBox.scrollTop = consoleBox.scrollHeight;
+}
+
+updateConsole();
+setInterval(updateConsole, 1000);
+</script>
+
+<button id="KillServer">Kill switch</button>
+    <form method="POST">
+        <div class="form-group">
+            <label for="code">Command: </label>
+            <input type="text" id="code" name="code" required>
+        </div>
+        <button type="submit">Enter</button>
+    </form>
+<h2>Server Log</h2>
+
+<pre
+    style="
+        background:#111;
+        color:#0f0;
+        padding:15px;
+        height:400px;
+        overflow-y:auto;
+        white-space:pre-wrap;
+    "
+id="console">{{ logs }}</pre>
+{% endblock %}

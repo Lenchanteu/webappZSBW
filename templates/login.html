@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Connection{% endblock %}
 
 {% block content %}
-    <h1>Login</h1>
+    <h1>Connection</h1>
     <form method="POST" action="{{ url_for('login') }}">
         <div class="form-group">
-            <label for="uname">Username:</label>
-            <input type="text" id="uname" name="uname" required>
+            <label for="uname">Nom d'utilisateur :</label>
+            <input type="text" id="uname" name="uname" required autocomplete="username">
         </div>
         <div class="form-group">
-            <label for="pswd">Password:</label>
-            <input type="password" id="pswd" name="pswd" required>
+            <label for="pswd">Mot de passe :</label>
+            <input type="password" id="pswd" name="pswd" required autocomplete="current-password">
         </div>
-        <button type="submit">Login</button>
+        <button type="submit">Connection</button>
     </form>
-    <p>Don't have an account? <a href="{{ url_for('register')}}">Register</a></p>
+    <p>Vous n'avez pas de compte? <a href="{{ url_for('register')}}">Créer un compte</a></p>
 {% endblock %}

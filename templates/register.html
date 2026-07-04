@@ -1,29 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Créer un compte{% endblock %}
 
 {% block content %}
     <div class="register-container">
-        <h1>Create an Account</h1>
+        <h1>Créer un compte</h1>
         <form method="POST" action="{{ url_for('register') }}">
             <div class="form-group">
-                <label for="uname">Username:</label>
-                <input type="text" id="uname" name="uname" required placeholder="Enter your username">
+                <label for="uname">Nom d'utilisateur :</label>
+                <input type="text" id="uname" name="uname" required placeholder="Nom d'utilisateur">
             </div>
             <div class=""form-group>
-                <label for="email"> Email address:</label>
-                <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                <label for="email">Addresse e-mail :</label>
+                <input type="email" id="email" name="email" required placeholder="Addresse e-mail">
+            </div>
+            <p>Pour maximiser la sécurité de votre compte, veuillez créer une phrase secrète comme mot de passe. Exemple: batterie correcte cheval écurie</p>
+            <div class="form-group">
+                <label for="pswd">Mot de passe :</label>
+                <input type="password" id="pswd" name="pswd" required placeholder="Mot de passe">
             </div>
             <div class="form-group">
-                <label for="pswd">Password:</label>
-                <input type="password" id="pswd" name="pswd" required placeholder="Enter your password">
+                <label for="confirm_pswd">Confirmer le mot de passe :</label>
+                <input type="password" id="confirm_pswd" name="confirm_pswd" required placeholder="Confirmer votre mot de passe">
             </div>
-            <div class="form-group">
-                <label for="confirm_pswd">Confirm Password:</label>
-                <input type="password" id="confirm_pswd" name="confirm_pswd" required placeholder="Confirm your password">
-            </div>
-            <button type="submit" class="btn-register">Register</button>
+            <button type="submit" class="btn-register">Créer le compte</button>
         </form>
-        <p class="login-link">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+        <p class="login-link">Vous avez déjà un compte? <a href="{{ url_for('login') }}">Connectez-vous ici</a></p>
     </div>
 {% endblock %}
