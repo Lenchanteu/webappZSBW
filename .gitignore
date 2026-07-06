@@ -216,3 +216,5 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+PLAN_ACTION.md
+SECURITY_AUDIT.md
