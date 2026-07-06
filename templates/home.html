@@ -3,9 +3,24 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <h1>ZSBW application pour la génération de rapports de visite</h1>
-    <p>Ceci est l'écran de démarage. Veuillez vous connecter pour commencer. <br>
-        ATTENTION: Cette application est en programme beta, des "bugs" pourraient être présents. <br>
-        Version: Beta 1.0 stable. Pour accèder à l'application admin, veuillez cliquer ici: <a href="{{ url_for('admin_login') }}">Tableau d'administration</a> (!PAS fonctionel!). Attention, ce projet est en cours de traduction de l'anglais vers le français. <br>
-    </p>
+    <section class="hero card">
+        <p class="eyebrow">ZSBW • Beta 1.0</p>
+        <h1>Générez et gérez vos rapports de visite en toute simplicité</h1>
+        <p>Bienvenue dans l’espace de création de rapports de visite. Connectez-vous pour commencer, consulter vos documents et suivre vos démarches plus facilement.</p>
+        <div class="hero-actions">
+            <a class="button-link" href="{{ url_for('login') }}">Se connecter</a>
+            <a class="button-link secondary" href="{{ url_for('register') }}">Créer un compte</a>
+        </div>
+    </section>
+
+    <div class="info-grid">
+        <div class="card">
+            <h2>À savoir</h2>
+            <p>Cette application est encore en phase bêta. Des imperfections peuvent apparaître pendant l’utilisation.</p>
+        </div>
+        <div class="card">
+            <h2>Administration</h2>
+            <p>Pour accéder à l’espace d’administration, cliquez sur <a href="{{ url_for('admin_login') }}">le tableau d’administration</a>.</p>
+        </div>
+    </div>
 {% endblock %}

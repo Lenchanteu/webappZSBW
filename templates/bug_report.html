@@ -1,30 +1,33 @@
 {% extends "base.html" %}
 
-{% block title %}Bug report{% endblock %}
+{% block title %}Signaler un bug{% endblock %}
 
 {% block content %}
+    <section class="card auth-card">
+        <p class="eyebrow">Support</p>
+        <h1>Signaler un bug</h1>
+        <p>Merci de nous aider à améliorer l’application. Décrivez le problème rencontré aussi précisément que possible.</p>
 
-<h2>Report a Bug</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-<form method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <label for="description">Description du problème</label>
+                <textarea id="description" name="description" rows="10" required placeholder="Expliquez ce qui s’est passé, quand cela est arrivé et la conséquence observée."></textarea>
+            </div>
 
-    <label>Description</label><br>
-    <textarea name="description" rows="10" cols="60" required></textarea>
+            <div class="form-group">
+                <label for="screenshot">Capture d’écran (optionnelle)</label>
+                <input id="screenshot" type="file" name="screenshot" accept="image/*">
+            </div>
 
-    <br><br>
+            <input type="hidden" name="browser" id="browser">
 
-    <label>Capture d'écran (optionelle)</label><br>
-    <input type="file" name="screenshot" accept="image/*">
+            <button type="submit">Envoyer le rapport</button>
+        </form>
+    </section>
 
-    <input type="hidden" name="browser" id="browser">
-
-    <br><br>
-    <button type="submit">Envoyer le rapport de bug</button>
-</form>
-
-<script>
-document.getElementById("browser").value =
-    navigator.userAgent;
-</script>
+    <script>
+        document.getElementById("browser").value = navigator.userAgent;
+    </script>
 {% endblock %}

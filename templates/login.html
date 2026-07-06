@@ -3,19 +3,23 @@
 {% block title %}Connection{% endblock %}
 
 {% block content %}
-    <h1>Connection</h1>
-    <form method="POST" action="{{ url_for('login') }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <section class="card auth-card">
+        <p class="eyebrow">Connexion</p>
+        <h1>Bon retour !</h1>
+        <p>Accédez à votre tableau de bord pour consulter et créer vos rapports.</p>
+        <form method="POST" action="{{ url_for('login') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        <div class="form-group">
-            <label for="uname">Nom d'utilisateur :</label>
-            <input type="text" id="uname" name="uname" required autocomplete="username">
-        </div>
-        <div class="form-group">
-            <label for="pswd">Mot de passe :</label>
-            <input type="password" id="pswd" name="pswd" required autocomplete="current-password">
-        </div>
-        <button type="submit">Connection</button>
-    </form>
-    <p>Vous n'avez pas de compte? <a href="{{ url_for('register')}}">Créer un compte</a></p>
+            <div class="form-group">
+                <label for="uname">Nom d'utilisateur :</label>
+                <input type="text" id="uname" name="uname" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="pswd">Mot de passe :</label>
+                <input type="password" id="pswd" name="pswd" required autocomplete="current-password">
+            </div>
+            <button type="submit">Se connecter</button>
+        </form>
+        <p class="auth-link">Vous n'avez pas de compte ? <a href="{{ url_for('register') }}">Créer un compte</a></p>
+    </section>
 {% endblock %}

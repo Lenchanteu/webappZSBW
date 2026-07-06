@@ -33,7 +33,7 @@
     </p>
 
     <form method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
-    {{ csrf_token() }}
+     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
         <input type="hidden" name="id" value="delete_account">
         <button type="submit" style="background-color: red; color: white;">

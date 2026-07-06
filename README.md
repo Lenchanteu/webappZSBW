@@ -31,3 +31,7 @@ LOG_FOLDER=/ProgramData/ZSBWApp/logs
 
 # Configuration Sécurité
 REQUIRE_HTTPS=True
+
+# Installation :
+Après avoir fait le fichier .env, veuiller executer pip install -r requirements.txt .
+Python doit, bien évidemment, être installer au préalable.

@@ -3,41 +3,41 @@
 {% block title %}Mes rapports{% endblock %}
 
 {% block content %}
+    <section class="card">
+        <p class="eyebrow">Documents</p>
+        <h1>Mes rapports</h1>
+        <p>Retrouvez ici l’ensemble des rapports disponibles à télécharger.</p>
 
-<h1>Mes rapports</h1>
-
-{% if files %}
-
-<table>
-
-<tr>
-    <th>Nom du fichier</th>
-    <th>Taille</th>
-    <th></th>
-</tr>
-
-{% for file in files %}
-
-<tr>
-    <td>{{ file.name }}</td>
-    <td>{{ file.size }} KB</td>
-    <td>
-        <a class="button"
-           href="{{ url_for('downloads', filename=file.name) }}">
-            Télécharger
-        </a>
-    </td>
-</tr>
-
-{% endfor %}
-
-</table>
-
-{% else %}
-
-<p>Aucun rapport trouvé.</p>
-
-{% endif %}
-
+        {% if files %}
+            <div class="table-wrapper">
+                <table class="file-table">
+                    <thead>
+                        <tr>
+                            <th>Nom du fichier</th>
+                            <th>Taille</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in files %}
+                            <tr>
+                                <td>{{ file.name }}</td>
+                                <td>{{ file.size }} KB</td>
+                                <td>
+                                    <a class="button-link small" href="{{ url_for('downloads', filename=file.name) }}">
+                                        Télécharger
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>Aucun rapport trouvé pour le moment.</p>
+            </div>
+        {% endif %}
+    </section>
 {% endblock %}
 

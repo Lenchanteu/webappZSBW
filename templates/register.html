@@ -3,20 +3,22 @@
 {% block title %}Créer un compte{% endblock %}
 
 {% block content %}
-    <div class="register-container">
+    <section class="card auth-card">
+        <p class="eyebrow">Inscription</p>
         <h1>Créer un compte</h1>
+        <p>Rejoignez l’application pour gérer vos rapports de visite efficacement.</p>
         <form method="POST" action="{{ url_for('register') }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <div class="form-group">
                 <label for="uname">Nom d'utilisateur :</label>
                 <input type="text" id="uname" name="uname" required placeholder="Nom d'utilisateur">
             </div>
-            <div class=""form-group>
-                <label for="email">Addresse e-mail :</label>
-                <input type="email" id="email" name="email" required placeholder="Addresse e-mail">
+            <div class="form-group">
+                <label for="email">Adresse e-mail :</label>
+                <input type="email" id="email" name="email" required placeholder="Adresse e-mail">
             </div>
-            <p>Pour maximiser la sécurité de votre compte, veuillez créer une phrase secrète comme mot de passe. Exemple: batterie correcte cheval écurie</p>
+            <p>Pour maximiser la sécurité de votre compte, choisissez un mot de passe robuste et facile à retenir.</p>
             <div class="form-group">
                 <label for="pswd">Mot de passe :</label>
                 <input type="password" id="pswd" name="pswd" required placeholder="Mot de passe">
@@ -27,6 +29,6 @@
             </div>
             <button type="submit" class="btn-register">Créer le compte</button>
         </form>
-        <p class="login-link">Vous avez déjà un compte? <a href="{{ url_for('login') }}">Connectez-vous ici</a></p>
-    </div>
+        <p class="auth-link">Vous avez déjà un compte ? <a href="{{ url_for('login') }}">Connectez-vous ici</a></p>
+    </section>
 {% endblock %}

@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 import platform
 from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.security import check_password_hash
 import logging
 from logging.config import dictConfig
 from functools import partial
@@ -17,24 +18,44 @@ import shutil
 from flask_wtf.csrf import CSRFProtect
 from dotenv import load_dotenv
 import argon2
+from argon2.exceptions import VerifyMismatchError
 
-
-
-from pdf_maker import convert_to_pdf
 from worker import generate_report_job
 from email_sender import send_bug_report, send_confirmation_email, send_passcode
 
 
 # ---------------- CONFIG ----------------
+def parse_bool(value, default=False):
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return default
+    text = str(value).strip().lower()
+    if text in {"1", "true", "yes", "on"}:
+        return True
+    if text in {"0", "false", "no", "off", ""}:
+        return False
+    return default
+
+
 load_dotenv(".env")
 ph = argon2.PasswordHasher()
-DATABASE = os.getenv('DATABASE_PATH', "")
+DATABASE = os.getenv('DATABASE_PATH', os.path.join(os.getcwd(), 'database', 'credentials.db'))
 TEMPLATE = "Rapport_de_prévention_incendie_template.docx"
-DEFAULT_FILE_PATH = os.getenv('DEFAULT_FILE_PATH', "")
-BUG_FOLDER = os.getenv('BUG_FOLDER', "")
-LOG_FOLDER = os.getenv('LOG_FOLDER', "")
+DEFAULT_FILE_PATH = os.getenv('DEFAULT_FILE_PATH', os.path.join(os.getcwd(), 'instance', 'reports'))
+BUG_FOLDER = os.getenv('BUG_FOLDER', os.path.join(DEFAULT_FILE_PATH, 'BugReports'))
+LOG_FOLDER = os.getenv('LOG_FOLDER', os.path.join(DEFAULT_FILE_PATH, 'logs'))
+FLASK_DEBUG = parse_bool(os.getenv('FLASK_DEBUG', 'False'), False)
+REQUIRE_HTTPS = parse_bool(os.getenv('REQUIRE_HTTPS', 'True'), True)
+SESSION_REFRESH_EACH_REQUEST = parse_bool(os.getenv('SESSION_REFRESH_EACH_REQUEST', 'True'), True)
+CREATE_TEST_USER = parse_bool(os.getenv('CREATE_TEST_USER', 'False'), False)
+SESSION_COOKIE_SECURE = not FLASK_DEBUG
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+
+os.makedirs(DEFAULT_FILE_PATH, exist_ok=True)
 os.makedirs(BUG_FOLDER, exist_ok=True)
-os.makedirs(os.path.join(LOG_FOLDER), exist_ok=True)
+os.makedirs(LOG_FOLDER, exist_ok=True)
 LOG_FILE = os.path.join(LOG_FOLDER, f'log_{datetime.today().strftime("%Y-%m-%d")}.log')
 if not os.path.exists(LOG_FILE):
     with open(LOG_FILE, 'w') as fp:
@@ -80,13 +101,22 @@ dictConfig(
     }
 )
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY', None)
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY missing")
+app.secret_key = SECRET_KEY
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 csrf = CSRFProtect(app)
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=int(os.getenv('SESSION_TIMEOUT_MINUTES', 90)))
-app.config['SESSION_REFRESH_EACH_REQUEST'] = bool(os.getenv('SESSION_REFRESH_EACH_REQUEST', True))
-app.logger.info(f"NEW LOG: timestamp: {datetime.now().strftime("%Y/%m/%d, %H:%M:%S")}\n\n")
-app.logger.debug(f"Current environment: {os.getenv('ENVIRONMENT')}")
+app.config.update({
+    'PERMANENT_SESSION_LIFETIME': timedelta(minutes=int(os.getenv('SESSION_TIMEOUT_MINUTES', 90))),
+    'SESSION_REFRESH_EACH_REQUEST': SESSION_REFRESH_EACH_REQUEST,
+    'SESSION_COOKIE_HTTPONLY': SESSION_COOKIE_HTTPONLY,
+    'SESSION_COOKIE_SECURE': SESSION_COOKIE_SECURE,
+    'SESSION_COOKIE_SAMESITE': SESSION_COOKIE_SAMESITE,
+    'MAX_CONTENT_LENGTH': int(os.getenv('MAX_CONTENT_LENGTH_BYTES', 16 * 1024 * 1024)),
+})
+app.logger.info(f"NEW LOG: timestamp: {datetime.now().strftime('%Y/%m/%d, %H:%M:%S')}\n\n")
+app.logger.debug(f"Current environment: {os.getenv('ENVIRONMENT', 'production')}")
 # Create a StreamHandler to handle file output
 
 handler = logging.FileHandler(LOG_FILE)
@@ -113,14 +143,16 @@ def init_db():
         );
     """)
     app.logger.info("Database was created")
-    # test user
-    cur.execute("SELECT 1 FROM credentials WHERE uname='test'")
-    if not cur.fetchone():
-        cur.execute(
-            "INSERT INTO credentials (uname, pswd, email, confirmed, last_ip) VALUES (?, ?, ?, ?, ?)",
-            ("test", ph.hash("test"), "test@test.com", True, "0.0.0.0")
-        )
-    app.logger.info("Test user was created")
+    if CREATE_TEST_USER:
+        cur.execute("SELECT 1 FROM credentials WHERE uname='test'")
+        if not cur.fetchone():
+            cur.execute(
+                "INSERT INTO credentials (uname, pswd, email, confirmed, last_ip) VALUES (?, ?, ?, ?, ?)",
+                ("test", ph.hash("test"), "test@test.com", True, "0.0.0.0")
+            )
+            app.logger.info("Test user was created")
+    else:
+        app.logger.info("Test user creation skipped")
     con.commit()
     con.close()
 
@@ -132,20 +164,30 @@ def check_credentials(uname, pswd):
     con = sqlite3.connect(DATABASE)
     cur = con.cursor()
 
-    cur.execute("SELECT pswd FROM credentials WHERE uname=?", (uname,))
+    cur.execute(
+        "SELECT pswd, confirmed FROM credentials WHERE uname=?",
+        (uname,)
+    )
     row = cur.fetchone()
-    cur.execute("SELECT confirmed FROM credentials WHERE uname=?", (uname,))
-    confirmed = cur.fetchone()
-    confirmed = confirmed[0] if confirmed != None else None
-    
-    current_app.logger.info("Checking a user credentials")
-    if not row:
-        return False, False
-    checked_hash = ph.verify(row, pswd)
-    if ph.check_needs_rehash(row):
-        change_password_func(uname, ph.hash(pswd))
     con.close()
-    return checked_hash, confirmed
+
+    current_app.logger.info("Checking user credentials")
+
+    if row is None:
+        return False, False
+
+    password_hash, confirmed = row
+
+    try:
+        ph.verify(password_hash, pswd)
+
+        if ph.check_needs_rehash(password_hash):
+            change_password_func(uname, pswd)
+
+        return True, confirmed
+
+    except VerifyMismatchError:
+        return False, confirmed
 
 def create_account(uname, pswd, email):
     con = sqlite3.connect(DATABASE)
@@ -237,7 +279,7 @@ def home():
 
 @app.before_request
 def enforce_https():
-    if not request.is_secure and not app.debug and os.getenv('REQUIRE_HTTPS', True):
+    if not request.is_secure and not app.debug and REQUIRE_HTTPS:
         url = request.url.replace('http://', 'https://', 1)
         return redirect(url, code=301)
 
@@ -315,8 +357,8 @@ def settings():
     if request.method == "POST":
         id = request.form.get("id", "")
         if id == "delete_account":
-            flash(f"Votre compte avec le nom d'utilisateur {session["uname"]} a été supprimé", "info")
-            del_user(session["uname"])
+            flash(f"Votre compte avec le nom d'utilisateur {session['uname']} a été supprimé", "info")
+            del_user(session['uname'])
             session["logged_in"] = False
             return redirect(url_for("home"))
         if id == "change_password":
@@ -442,7 +484,7 @@ def myfiles():
     if not session.get("logged_in"):
         abort(403)
 
-    user_folder = os.path.join(DEFAULT_FILE_PATH, session["uname"])
+    user_folder = os.path.join(DEFAULT_FILE_PATH, session.get("uname", "test"), "RAPPORTS")
 
     if not os.path.exists(user_folder):
         current_app.logger.info(f"created a new user folder for user {session['uname']} while viewing files at /myfiles.")
@@ -470,7 +512,7 @@ def downloads(filename):
     if not session.get("logged_in"):
         abort(403)
 
-    user_folder = os.path.join(DEFAULT_FILE_PATH, session["uname"])
+    user_folder = os.path.join(DEFAULT_FILE_PATH, session["uname"], "RAPPORTS")
 
     # Prevent directory traversal attacks
     filepath = os.path.abspath(os.path.join(user_folder, filename))
@@ -564,7 +606,8 @@ def admin_login():
     
     code = request.form.get("code", "None")
     current_app.logger.debug(f"Received: {repr(code)}")
-    if hashlib.sha256(code.encode()).hexdigest() == os.getenv('ADMIN_PASSWORD_HASH', None):
+    admin_password_hash = os.getenv('ADMIN_PASSWORD_HASH', '')
+    if admin_password_hash and check_password_hash(admin_password_hash, code):
         session["admin_logged_in"] = True
         current_app.logger.warning(f"Someone with IP {request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']} has gotten admin access. Shut down server?")
         return redirect(url_for("admin"))
@@ -680,6 +723,7 @@ def download_data():
         current_app.logger.info(f"User {uname} has successfully logged in to get their info")
         modify_lastIP(ip, uname)
         user_folder = os.path.join(DEFAULT_FILE_PATH, session["uname"], "DATA")
+        os.makedirs(user_folder, exist_ok=True)
         filepath = os.path.abspath(os.path.join(user_folder, "data.txt"))
         with open(filepath, "w", encoding="utf-8") as file:
             file.write(
@@ -730,4 +774,4 @@ def delete_data():
 
 if __name__ == "__main__":
     os.makedirs(DEFAULT_FILE_PATH, exist_ok=True)
-    app.run(debug=bool(os.getenv('FLASK_DEBUG', False)), host='0.0.0.0')
+    app.run(debug=FLASK_DEBUG, host='0.0.0.0')
