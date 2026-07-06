@@ -1,19 +1,18 @@
-
 {% extends "base.html" %}
 
 {% block title %}Mes rapports{% endblock %}
 
 {% block content %}
 
-<h1>My Reports</h1>
+<h1>Mes rapports</h1>
 
 {% if files %}
 
 <table>
 
 <tr>
-    <th>Filename</th>
-    <th>Size</th>
+    <th>Nom du fichier</th>
+    <th>Taille</th>
     <th></th>
 </tr>
 
@@ -25,7 +24,7 @@
     <td>
         <a class="button"
            href="{{ url_for('downloads', filename=file.name) }}">
-            Download
+            Télécharger
         </a>
     </td>
 </tr>
@@ -36,8 +35,9 @@
 
 {% else %}
 
-<p>No reports found.</p>
+<p>Aucun rapport trouvé.</p>
 
 {% endif %}
 
 {% endblock %}
+

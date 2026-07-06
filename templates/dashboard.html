@@ -1,22 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Tableau de bord{% endblock %}
 
 {% block content %}
-    <h1>Welcome, {{ session.get('uname') }}!</h1>
-    <p>This is your dashboard. You are logged in.</p>
+    <h1>Bienvenue, {{ session.get('uname') }} !</h1>
+    <p>Bienvenue sur votre tableau de bord. Vous êtes connecté.</p>
 
     <div class="card">
-        <h2>Your Stats</h2>
-        <p>Here are your statistics or recent activity.</p>
-    </div>
-
-    <div class="card">
-        <h2>Quick Actions</h2>
+        <h2>Actions rapides</h2>
         <ul>
-            <li><a href="{{ url_for('myfiles')}}">Saved rapports</a></li>
-            <li><a href="#">Change Password</a></li>
-            <li><a href="#">Settings</a></li>
+            <li><a href="{{ url_for('myfiles') }}">Rapports enregistrés</a></li>
+            <li><a href="{{ url_for('settings') }}">Paramètres</a></li>
         </ul>
     </div>
 {% endblock %}

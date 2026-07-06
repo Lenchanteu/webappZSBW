@@ -1,19 +1,26 @@
 {% extends "base.html" %}
 
-{% block title %}Confirmation email{% endblock %}
+{% block title %}Confirmation de l'adresse e-mail{% endblock %}
 
 {% block content %}
-    <h1>Confirm your email</h1>
+    <h1>Confirmez votre adresse e-mail</h1>
+
     <form method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
         <div class="form-group">
-            <label for="uname">Username:</label>
+            <label for="uname">Nom d'utilisateur :</label>
             <input type="text" id="uname" name="uname" required>
         </div>
+
         <div class="form-group">
-            <label for="pswd">Password:</label>
+            <label for="pswd">Mot de passe :</label>
             <input type="password" id="pswd" name="pswd" required>
         </div>
-        <button type="submit">submit</button>
+
+        <button type="submit">Confirmer</button>
     </form>
-    <p>Don't have an account? <a href="{{ url_for('register')}}">Register</a></p>
+
+    <p>Vous n'avez pas encore de compte ? <a href="{{ url_for('register') }}">Inscrivez-vous</a>.</p>
 {% endblock %}
+

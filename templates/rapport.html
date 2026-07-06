@@ -277,6 +277,8 @@
     <div class="form-section">
 
         <form id="fireReportForm" onsubmit="generatePDF(event); return false;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <div class="form-row">
                 <label class="form-label">Concerne:</label>
                 <span><input type="text" class="form-input" name="concerne" value="{{ concerne }}"></span>

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Admin{% endblock %}
+{% block title %}Administration{% endblock %}
 
 {% block content %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -9,34 +9,60 @@
         $('#KillServer').click(function(e) {
             e.preventDefault();
             $.get('/KillSwitch', function(data) {
-                console.log(data); // Outputs: Executed Successfully
+                console.log(data);
             });
         });
     });
+
     async function updateConsole() {
-    const response = await fetch("/admin/logs");
-    const text = await response.text();
+        const response = await fetch("/admin/logs");
+        const text = await response.text();
 
-    const consoleBox = document.getElementById("console");
-    consoleBox.textContent = text;
+        const consoleBox = document.getElementById("console");
+        consoleBox.textContent = text;
 
-    // Keep the view at the bottom
-    consoleBox.scrollTop = consoleBox.scrollHeight;
-}
+        // Maintient l'affichage en bas de la console
+        consoleBox.scrollTop = consoleBox.scrollHeight;
+    }
 
-updateConsole();
-setInterval(updateConsole, 1000);
+    updateConsole();
+    setInterval(updateConsole, 1000);
 </script>
 
-<button id="KillServer">Kill switch</button>
-    <form method="POST">
-        <div class="form-group">
-            <label for="code">Command: </label>
-            <input type="text" id="code" name="code" required>
-        </div>
-        <button type="submit">Enter</button>
-    </form>
-<h2>Server Log</h2>
+<button id="KillServer">Arrêt d'urgence du serveur</button>
+
+<form method="POST">
+    <div class="form-group">
+        <input type="hidden" name="form_id" value="comm">
+
+        <label for="code">Commande :</label>
+        <input type="text" id="code" name="code" required>
+    </div>
+
+    <div class="form-group">
+        <label for="args">Arguments :</label>
+        <input type="text" id="args" name="args">
+    </div>
+
+    <button type="submit">Exécuter</button>
+</form>
+
+<h2>Commandes</h2>
+
+<form method="POST">
+    <h3>Supprimer les rapports d'un utilisateur</h3>
+
+    <input type="hidden" name="form_id" value="del_u_rep">
+
+    <div class="form-group">
+        <label for="user">Utilisateur :</label>
+        <input type="text" id="user" name="args">
+    </div>
+
+    <button type="submit">Supprimer</button>
+</form>
+
+<h2>Journal du serveur</h2>
 
 <pre
     style="
@@ -47,5 +73,7 @@ setInterval(updateConsole, 1000);
         overflow-y:auto;
         white-space:pre-wrap;
     "
-id="console">{{ logs }}</pre>
+    id="console">{{ logs }}</pre>
+
 {% endblock %}
+

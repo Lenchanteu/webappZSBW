@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Generating Report...</title>
+    <title>Génération du rapport...</title>
 
     <style>
         body {
@@ -44,24 +44,29 @@
 
 <div class="loader">
     <div class="spinner"></div>
-    <p>Generating your report...</p>
+    <p>Génération de votre rapport...</p>
 </div>
 
 <script>
 const jobId = "{{ job_id }}";
+
 function go_back() {
     window.location.href = `/rapport`;
 }
+
 async function checkStatus() {
     const res = await fetch(`/job-status/${jobId}`);
     const data = await res.json();
+
     console.log(data);
+
     if (data.status == "done") {
         window.location.href = `/download/${jobId}`;
         window.setTimeout(go_back, 1600);
     } else {
         setTimeout(checkStatus, 800);
     }
+
     console.log(data);
 }
 
@@ -70,3 +75,4 @@ checkStatus();
 
 </body>
 </html>
+

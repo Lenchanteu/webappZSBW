@@ -38,6 +38,7 @@ informations techniques associées à son stockage ne sont pas inclus dans l'exp
 </p>
 
 <form method="POST" action="{{ url_for('download_data') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="form-group">
             <label for="uname">Nom d'utilisateur :</label>
             <input type="text" id="uname" name="uname" required autocomplete="username">
@@ -57,6 +58,7 @@ informations techniques associées à son stockage ne sont pas inclus dans l'exp
     1. Dernière adresse IP de connexion
 </ul>
 <form method="POST" action="{{ url_for('delete_data')}}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="form-group">
             <label for="uname">Nom d'utilisateur :</label>
             <input type="text" id="uname" name="uname" required autocomplete="username">

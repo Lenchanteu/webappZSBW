@@ -5,6 +5,8 @@
 {% block content %}
     <h1>Connection</h1>
     <form method="POST" action="{{ url_for('login') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
         <div class="form-group">
             <label for="uname">Nom d'utilisateur :</label>
             <input type="text" id="uname" name="uname" required autocomplete="username">

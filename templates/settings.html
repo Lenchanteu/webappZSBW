@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Paramètres{% endblock %}
+
+{% block content %}
+    <h1>Paramètres du compte</h1>
+
+    <p>
+        Gérez les paramètres de votre compte depuis cette page.
+    </p>
+
+    <hr>
+
+    <h2>Changer le mot de passe</h2>
+    <p>
+        Vous pouvez modifier votre mot de passe en cliquant sur le bouton ci-dessous.
+    </p>
+
+    <form method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <input type="hidden" name="id" value="change_password">
+        <button type="submit">Changer le mot de passe</button>
+    </form>
+
+    <br>
+
+    <hr>
+
+    <h2>Supprimer le compte</h2>
+    <p style="color: red;">
+        <strong>Attention :</strong> Cette action est irréversible. Toutes vos données seront définitivement supprimées.
+    </p>
+
+    <form method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
+    {{ csrf_token() }}
+
+        <input type="hidden" name="id" value="delete_account">
+        <button type="submit" style="background-color: red; color: white;">
+            Supprimer mon compte
+        </button>
+    </form>
+
+{% endblock %}

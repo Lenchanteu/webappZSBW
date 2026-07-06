@@ -7,24 +7,32 @@ import os
 import uuid
 import threading
 from werkzeug.utils import secure_filename
-from datetime import datetime
+from datetime import datetime, timedelta
 import platform
 from werkzeug.middleware.proxy_fix import ProxyFix
 import logging
 from logging.config import dictConfig
 from functools import partial
+import shutil
+from flask_wtf.csrf import CSRFProtect
+from dotenv import load_dotenv
+import argon2
+
+
 
 from pdf_maker import convert_to_pdf
 from worker import generate_report_job
-from email_sender import send_bug_report, send_confirmation_email
+from email_sender import send_bug_report, send_confirmation_email, send_passcode
 
 
 # ---------------- CONFIG ----------------
-DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database', 'credentials.db')
+load_dotenv(".env")
+ph = argon2.PasswordHasher()
+DATABASE = os.getenv('DATABASE_PATH', "")
 TEMPLATE = "Rapport_de_prévention_incendie_template.docx"
-DEFAULT_FILE_PATH = r"C:\ProgramData\ZSBWApp"
-BUG_FOLDER = r"C:\ProgramData\ZSBWApp\BugReports"
-LOG_FOLDER = os.path.join(DEFAULT_FILE_PATH, 'logs')
+DEFAULT_FILE_PATH = os.getenv('DEFAULT_FILE_PATH', "")
+BUG_FOLDER = os.getenv('BUG_FOLDER', "")
+LOG_FOLDER = os.getenv('LOG_FOLDER', "")
 os.makedirs(BUG_FOLDER, exist_ok=True)
 os.makedirs(os.path.join(LOG_FOLDER), exist_ok=True)
 LOG_FILE = os.path.join(LOG_FOLDER, f'log_{datetime.today().strftime("%Y-%m-%d")}.log')
@@ -72,8 +80,11 @@ dictConfig(
     }
 )
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(32)
+app.secret_key = os.getenv('SECRET_KEY', None)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+csrf = CSRFProtect(app)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=int(os.getenv('SESSION_TIMEOUT_MINUTES', 90)))
+app.config['SESSION_REFRESH_EACH_REQUEST'] = bool(os.getenv('SESSION_REFRESH_EACH_REQUEST', True))
 app.logger.info(f"NEW LOG: timestamp: {datetime.now().strftime("%Y/%m/%d, %H:%M:%S")}\n\n")
 app.logger.debug(f"Current environment: {os.getenv('ENVIRONMENT')}")
 # Create a StreamHandler to handle file output
@@ -97,7 +108,7 @@ def init_db():
             uname TEXT PRIMARY KEY,
             pswd TEXT NOT NULL,
             email TEXT NOT NULL UNIQUE,
-            confirmed BOOl,
+            confirmed BOOL,
             last_ip TEXT
         );
     """)
@@ -106,8 +117,8 @@ def init_db():
     cur.execute("SELECT 1 FROM credentials WHERE uname='test'")
     if not cur.fetchone():
         cur.execute(
-            "INSERT INTO credentials (uname, pswd, email,    confirmed, last_ip) VALUES (?, ?, ?, ?, ?)",
-            ("test", hashlib.sha256("test".encode()).hexdigest(), "test@test.com", True, "0.0.0.0")
+            "INSERT INTO credentials (uname, pswd, email, confirmed, last_ip) VALUES (?, ?, ?, ?, ?)",
+            ("test", ph.hash("test"), "test@test.com", True, "0.0.0.0")
         )
     app.logger.info("Test user was created")
     con.commit()
@@ -125,12 +136,14 @@ def check_credentials(uname, pswd):
     row = cur.fetchone()
     cur.execute("SELECT confirmed FROM credentials WHERE uname=?", (uname,))
     confirmed = cur.fetchone()
-    confirmed = confirmed[0] if confirmed  != None else None
+    confirmed = confirmed[0] if confirmed != None else None
     
     current_app.logger.info("Checking a user credentials")
     if not row:
         return False, False
-    checked_hash = (hashlib.sha256(pswd.encode()).hexdigest() == row[0])
+    checked_hash = ph.verify(row, pswd)
+    if ph.check_needs_rehash(row):
+        change_password_func(uname, ph.hash(pswd))
     con.close()
     return checked_hash, confirmed
 
@@ -147,8 +160,8 @@ def create_account(uname, pswd, email):
         con.close()
         return False
 
-    hashed = hashlib.sha256(pswd.encode()).hexdigest()
-    cur.execute("INSERT INTO credentials VALUES (?, ?, ?, ?)", (uname, hashed, email, False,))
+    hashed = ph.hash(pswd)
+    cur.execute("INSERT INTO credentials VALUES (?, ?, ?, ?, ?)", (uname, hashed, email, False, "0.0.0.0", ))
 
     con.commit()
     con.close()
@@ -160,13 +173,14 @@ def modify_lastIP(ip, uname):
 
     cur.execute("UPDATE credentials SET last_ip=? WHERE uname=?", (ip, uname,))
     con.commit()
-    con.close
+    con.close()
+
 
 # ---------------- Functions --------------
 def dispatchCommands(command_table, command_name, args):
     if command_name not in command_table:
         raise ValueError(f"Command {command_name} not found in command table.")
-    
+    current_app.logger.debug(f"Command received. Name: {command_name}, args: {args}")
     entry = command_table[command_name]
     func = entry["name"]
     arg_names = entry["args"]
@@ -184,17 +198,48 @@ def dispatchCommands(command_table, command_name, args):
 
 def debugMessage():
     app.logger.debug("Debug message: Does everything work?")
+
+def del_rapport(user):
+    directory = os.path.join(DEFAULT_FILE_PATH, user, "RAPPORTS")
+    try:
+        shutil.rmtree(directory)
+    except OSError as e:
+        current_app.logger.error(f"Could not delete repports from user {user}. Error info: {e}")
+    return None
+
+def del_user(user):
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+    cur.execute("DELETE FROM credentials WHERE uname=?", (user,))
+    con.commit()
+    con.close()
+
+def change_password_func(user, password):
+    hash = ph.hash(password)
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+    cur.execute("UPDATE credentials SET pswd=? WHERE uname=?", (hash, user,))
+    con.commit()
+    con.close()
 # ---------------- COMMAND TABLE ------------
 COMMAND_TABLE = {
                 "DEBUG": 
                 {"name": debugMessage, 
-                "args": []}
+                "args": []},
+                "DELETE_RAPPORT":
+                {"name": del_rapport,
+                 "args": ["user"]}
                         }
 # ---------------- ROUTES ----------------
 @app.route("/")
 def home():
     return render_template("home.html")
 
+@app.before_request
+def enforce_https():
+    if not request.is_secure and not app.debug and os.getenv('REQUIRE_HTTPS', True):
+        url = request.url.replace('http://', 'https://', 1)
+        return redirect(url, code=301)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -257,13 +302,61 @@ def register():
 @app.route("/dashboard")
 def dashboard():
     if not session.get("logged_in"):
-        ip = request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']
-        current_app.logger.warning(f"A user with IP address {ip} has tried to access the dashboard without logging in. Sending them to login.")
-        return redirect(url_for("login"))
+        abort(403)
     
     return render_template("dashboard.html")
 
+@app.route("/settings", methods=["GET", "POST"])
+def settings():
+    if not session.get("logged_in"):
+        abort(403)
+    if request.method == "GET":
+        return render_template("settings.html")
+    if request.method == "POST":
+        id = request.form.get("id", "")
+        if id == "delete_account":
+            flash(f"Votre compte avec le nom d'utilisateur {session["uname"]} a été supprimé", "info")
+            del_user(session["uname"])
+            session["logged_in"] = False
+            return redirect(url_for("home"))
+        if id == "change_password":
+            return redirect(url_for("change_password"))
+    return redirect(url_for("home"))
 
+@app.route("/change_password", methods=["GET", "POST"])
+def change_password():
+    if not session.get("logged_in"):
+        abort(403)
+    uname = session["uname"]
+    if request.method == "GET":
+        passcode = str(secrets.randbelow(1000000)).zfill(6)
+        session["passcode"] = passcode
+        con = sqlite3.connect(DATABASE)
+        cur = con.cursor()
+        cur.execute("SELECT email FROM credentials WHERE uname=?", (uname,))
+        email = cur.fetchone()[0]
+        send_passcode(uname, email, passcode)
+        return render_template("change_password.html")
+    if request.method == "POST":
+        code = request.form.get("code")
+        new_pass = request.form.get("new")
+        if code == session.get("passcode") and new_pass != None:
+            change_password_func(uname, new_pass)
+            session["logged_in"] = False
+            flash("Mot de passe changé, utilisateur déconnecté.")
+            session.pop("passcode", None)
+            return redirect(url_for("login"))
+        elif code != session.get("passcode"): 
+            flash("Mauvais code")
+            session.pop("passcode", None)
+            return redirect(url_for("login"))
+        elif new_pass == None:
+            flash("Veuillez entrer un mot de passe.")
+        else:
+            flash("Erreur.")
+            session.pop("passcode", None)
+            return redirect(url_for("home"))
+    return redirect(url_for("home"))
 @app.route("/logout")
 def logout():
     current_app.logger.info(f"User {session['uname']} has logged out.")
@@ -274,9 +367,7 @@ def logout():
 @app.route("/rapport")
 def rapport():
     if not session.get("logged_in"):
-        ip = request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']
-        current_app.logger.warning(f"Someone with IP address {ip} has tried to access page /rapport while not being logged in. Sending them to login")
-        return redirect(url_for("login"))
+        abort(403)
 
     user_dir = os.path.join(DEFAULT_FILE_PATH, session["uname"])
     os.makedirs(user_dir, exist_ok=True)
@@ -293,7 +384,7 @@ def start_report():
     except Exception as e:
         current_app.logger.error(f"An error has occured. Exception in /start repport while trying to get session[uname]. Exception: {e}")
         abort(401)
-    user_dir = os.path.join(DEFAULT_FILE_PATH, uname)
+    user_dir = os.path.join(DEFAULT_FILE_PATH, uname, "RAPPORTS")
 
     os.makedirs(user_dir, exist_ok=True)
 
@@ -338,15 +429,18 @@ def loading(job_id):
 
 @app.route("/debug/jobs")
 def debug_jobs():
+    if not session.get("admin_logged_in"):
+        abort(403)
+
     current_app.logger.warning(f"Someone is trying to access a debug tool at /debug/jobs. IP address is {request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']}.")
     return jobs
+
 
 #----------------- SAVING SYSTEM -------------
 @app.route("/myfiles")
 def myfiles():
-    if "uname" not in session:
-        current_app.logger.warning(f"Someone with IP address {request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']} has tried to access page /myfiles while not being logged in. Sending them to login")
-        return redirect(url_for("login"))
+    if not session.get("logged_in"):
+        abort(403)
 
     user_folder = os.path.join(DEFAULT_FILE_PATH, session["uname"])
 
@@ -373,9 +467,8 @@ def myfiles():
 
 @app.route("/downloads/<filename>")
 def downloads(filename):
-    if "uname" not in session:
-        current_app.logger.warning(f"Someone with IP address {request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']} has tried to access page /dowloads/{filename} while not being logged in. Sending them to login")
-        return redirect(url_for("login"))
+    if not session.get("logged_in"):
+        abort(403)
 
     user_folder = os.path.join(DEFAULT_FILE_PATH, session["uname"])
 
@@ -471,7 +564,7 @@ def admin_login():
     
     code = request.form.get("code", "None")
     current_app.logger.debug(f"Received: {repr(code)}")
-    if hashlib.sha256(code.encode()).hexdigest() == "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918":
+    if hashlib.sha256(code.encode()).hexdigest() == os.getenv('ADMIN_PASSWORD_HASH', None):
         session["admin_logged_in"] = True
         current_app.logger.warning(f"Someone with IP {request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']} has gotten admin access. Shut down server?")
         return redirect(url_for("admin"))
@@ -482,8 +575,7 @@ def admin_login():
 @app.route("/admin_logged_in", methods=["GET", "POST"])
 def admin():
     if not session.get("admin_logged_in"):
-        flash("You are not allowed here", "error")
-        return redirect(url_for("home"))
+        abort(403)
 
     # Read the log file
     try:
@@ -493,17 +585,30 @@ def admin():
         logs = "No log file found."
 
     if request.method == "POST":
-        code = request.form.get("code", "")
-        args = {}
+        form_id = request.form.get("form_id")
+        if form_id == "comm":
+            code = request.form.get("code", "")
+            args = args = {
+    "user": request.form.get("args", "")
+}
 
-        try:
-            func = dispatchCommands(COMMAND_TABLE, code, args)
-            func()
-            flash("Command executed.", "success")
-        except Exception as e:
-            app.logger.exception("Admin command failed")
-            flash(f"Error: {e}", "error")
-
+            try:
+                func = dispatchCommands(COMMAND_TABLE, code, args)
+                func()
+                flash("Command executed.", "success")
+            except Exception as e:
+                app.logger.exception("Admin command failed")
+                flash(f"Error: {e}", "error")
+        if form_id == "del_u_rep":
+            user = request.form.get("args")
+            try:
+                func = dispatchCommands(COMMAND_TABLE, "DELETE_RAPPORT", {"user": user})
+                func()
+                app.logger.info(f"Deleting the user repports of user {user} has been succesfull.")
+                flash("Success", "info")
+            except Exception as e:
+                app.logger.exception(f"Deleting the user repports of user {user} has failed.")
+                flash(f"Error: {e} ", "error")
         # Reload the log after the command executes
         with open(LOG_FILE, "r", encoding="utf-8") as f:
             logs = f.read()
@@ -513,13 +618,12 @@ def admin():
 
 @app.route("/KillSwitch", methods=["GET"])
 def killSwitch():
-    if session["admin_logged_in"]:
-        current_app.logger.critical(f"Kill switch activated by someone with IP address {request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']}")
-        os._exit(1)
-        return 0
-    current_app.logger.warning(f"Someone with IP adress {request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']} has tried to use the kill switch whitout being admin.")
-    flash("You are not allowed here.", "error")
-    return(url_for("home"))
+    if not session.get("admin_logged_in"):
+        abort(403)
+    current_app.logger.critical(f"Kill switch activated by someone with IP address {request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']}")
+    os._exit(1)
+    return 0
+
 
 @app.route("/admin/logs")
 def admin_logs():
@@ -541,6 +645,8 @@ def cookies():
     return render_template("cookies.html")
 @app.route("/download_collected_data", methods=["GET", "POST"])
 def download_data():
+    if not session.get("logged_in"):
+        abort(403)
     if request.method == "GET":
         return render_template("download_data.html")
     
@@ -600,6 +706,8 @@ def download_data():
     return redirect(url_for("download_data"))
 @app.route("/delete_data", methods=["POST"])
 def delete_data():
+    if not session.get("logged_in"):
+        abort(403)
     uname = request.form.get("uname")
     pswd = request.form.get("pswd")
     ip = request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']
@@ -622,4 +730,4 @@ def delete_data():
 
 if __name__ == "__main__":
     os.makedirs(DEFAULT_FILE_PATH, exist_ok=True)
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=bool(os.getenv('FLASK_DEBUG', False)), host='0.0.0.0')
