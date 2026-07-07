@@ -1,3 +1,4 @@
+import hashlib
 import importlib
 import sys
 import types
@@ -64,3 +65,24 @@ def test_account_creation_and_login_flow(main_module):
 
     assert ok is True
     assert confirmed in (False, 0)
+
+
+def test_admin_login_accepts_sha256_password(main_module, monkeypatch):
+    monkeypatch.setenv("ADMIN_PASSWORD_HASH", hashlib.sha256(b"admin-secret").hexdigest())
+    main_module.app.config["WTF_CSRF_ENABLED"] = False
+    client = main_module.app.test_client()
+
+    with client.session_transaction() as session:
+        session.clear()
+
+    response = client.post(
+        "/admin",
+        data={"code": "admin-secret"},
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 302
+    assert response.headers["Location"].endswith("/admin_logged_in")
+
+    with client.session_transaction() as session:
+        assert session["admin_logged_in"] is True

@@ -263,6 +263,26 @@ def change_password_func(user, password):
     cur.execute("UPDATE credentials SET pswd=? WHERE uname=?", (hash, user,))
     con.commit()
     con.close()
+
+
+def verify_admin_password(provided_password, configured_hash):
+    if not provided_password or not configured_hash:
+        return False
+
+    if provided_password == configured_hash:
+        return True
+
+    if configured_hash.startswith("sha256:"):
+        expected_hash = configured_hash.split(":", 1)[1]
+        return hashlib.sha256(provided_password.encode("utf-8")).hexdigest() == expected_hash
+
+    if len(configured_hash) == 64 and all(ch in "0123456789abcdefABCDEF" for ch in configured_hash):
+        return hashlib.sha256(provided_password.encode("utf-8")).hexdigest() == configured_hash
+
+    try:
+        return check_password_hash(configured_hash, provided_password)
+    except Exception:
+        return False
 # ---------------- COMMAND TABLE ------------
 COMMAND_TABLE = {
                 "DEBUG": 
@@ -607,7 +627,7 @@ def admin_login():
     code = request.form.get("code", "None")
     current_app.logger.debug(f"Received: {repr(code)}")
     admin_password_hash = os.getenv('ADMIN_PASSWORD_HASH', '')
-    if admin_password_hash and check_password_hash(admin_password_hash, code):
+    if verify_admin_password(code, admin_password_hash):
         session["admin_logged_in"] = True
         current_app.logger.warning(f"Someone with IP {request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']} has gotten admin access. Shut down server?")
         return redirect(url_for("admin"))
