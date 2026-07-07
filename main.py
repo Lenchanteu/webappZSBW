@@ -126,6 +126,7 @@ formatter = logging.Formatter('[%(asctime)s] %(levelname)s in %(module)s: %(mess
 handler.setFormatter(formatter)
 werkzeug_logger = logging.getLogger("werkzeug")
 werkzeug_logger.setLevel(logging.WARNING)
+app.logger.info(f"PID is {os.getpid()}")
 # ---------------- DB INIT ----------------
 def init_db():
     os.makedirs(os.path.dirname(DATABASE), exist_ok=True)
