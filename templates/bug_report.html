@@ -1,29 +1,29 @@
 {% extends "base.html" %}
 
-{% block title %}Signaler un bug{% endblock %}
+{% block title %}{{ _("Found a bug?") }}{% endblock %}
 
 {% block content %}
     <section class="card auth-card">
-        <p class="eyebrow">Support</p>
-        <h1>Signaler un bug</h1>
-        <p>Merci de nous aider à améliorer l’application. Décrivez le problème rencontré aussi précisément que possible.</p>
+        <p class="eyebrow">{{ _("Support") }}</p>
+        <h1>{{ _("Found a bug?") }}</h1>
+        <p>{{ _("Found a bug? Please give a precise description of the bug and how you got it. Thank you for helping us make this app better") }}</p>
 
         <form method="POST" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <div class="form-group">
-                <label for="description">Description du problème</label>
+                <label for="description">{{ _("Bug description") }}</label>
                 <textarea id="description" name="description" rows="10" required placeholder="Expliquez ce qui s’est passé, quand cela est arrivé et la conséquence observée."></textarea>
             </div>
 
             <div class="form-group">
-                <label for="screenshot">Capture d’écran (optionnelle)</label>
+                <label for="screenshot">{{ _("Optional screenshot") }}</label>
                 <input id="screenshot" type="file" name="screenshot" accept="image/*">
             </div>
 
             <input type="hidden" name="browser" id="browser">
 
-            <button type="submit">Envoyer le rapport</button>
+            <button type="submit">{{ _("Send") }}</button>
         </form>
     </section>
 

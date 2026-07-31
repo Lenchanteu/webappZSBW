@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ZSBW, bêta 1.0{% endblock %}</title>
+    <title>{% block title %}{{ _("PDF generator") }}, 1.0{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <nav>
-        <div class="logo">ZSBW, bêta 1.0</div>
+        <div class="logo">{{ _("PDF generator") }}, 1.0</div>
 
         <div class="nav-links">
             {% if session.get('logged_in') %}
-                <a href="{{ url_for('dashboard') }}">Tableau de bord</a>
-                <a href="{{ url_for('logout') }}">Se déconnecter</a>
-                <a href="{{ url_for('rapport') }}">Rapport</a>
-                <a href="{{ url_for('myfiles') }}">Mes rapports</a>
+                <a href="{{ url_for('dashboard') }}">{{ _("Dashboard") }}</a>
+                <a href="{{ url_for('logout') }}">{{ _("Log out") }}</a>
+                <a href="{{ url_for('rapport') }}">{{ _("PDF generator") }}</a>
+                <a href="{{ url_for('myfiles') }}">{{ _("My files") }}</a>
             {% else %}
-                <a href="{{ url_for('home') }}">Accueil</a>
-                <a href="{{ url_for('login') }}">Connexion</a>
-                <a href="{{ url_for('register') }}">Inscription</a>
+                <a href="{{ url_for('home') }}">{{ _("Home") }}</a>
+                <a href="{{ url_for('login') }}">{{ _("Login") }}</a>
+                <a href="{{ url_for('register') }}">{{ _("Register") }}</a>
             {% endif %}
 
-            <a href="{{ url_for('report_bug') }}">Signaler un bug</a>
+            <a href="{{ url_for('report_bug') }}">{{ _("Found a bug?") }}</a>
         </div>
     </nav>
 
@@ -39,8 +39,8 @@
     </main>
 
     <footer class="footer">
-        <a href="https://example.com">ZSBW App</a> © 2026 by <a href="https://example.com">Merlin Van Cranem</a> is licensed under <a href="https://creativecommons.org/licenses/by-nd/4.0/">CC BY-ND 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
-        <p><a href="{{ url_for('cookies') }}">Politique de confidentialité</a></p>
+        <a href="https://example.com">{{ _("PDF generation App") }}</a> © 2026 {{ _("by") }} <a href="https://github.com/Lenchanteu">Merlin Van Cranem</a> {{ _("is licensed under") }} <a href="https://creativecommons.org/licenses/by-nd/4.0/">CC BY-ND 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+        <p><a href="{{ url_for('cookies') }}">{{ _("Cookies") }}</a></p>
     </footer>
 </body>
 </html>

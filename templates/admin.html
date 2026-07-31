@@ -29,24 +29,24 @@
     setInterval(updateConsole, 1000);
 </script>
 
-<button id="KillServer">Arrêt d'urgence du serveur</button>
+<button id="KillServer">{{ _("Server emergency shutdown") }}</button>
 
-<h2>Commandes</h2>
+<h2>{{ _("CCommands") }}</h2>
 
 <form method="POST">
-    <h3>Supprimer les rapports d'un utilisateur</h3>
+    <h3>{{ _("Delete user PDF") }}</h3>
 
     <input type="hidden" name="form_id" value="del_u_rep">
 
     <div class="form-group">
-        <label for="user">Utilisateur :</label>
+        <label for="user">{{ _("Username") }} :</label>
         <input type="text" id="user" name="args">
     </div>
 
-    <button type="submit">Supprimer</button>
+    <button type="submit">{{ _("Delete") }}</button>
 </form>
 
-<h2>Journal du serveur</h2>
+<h2>{{ _("Server logs") }}</h2>
 
 <pre
     style="

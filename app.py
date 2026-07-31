@@ -1,5 +1,7 @@
 #------------------- IMPORTS ------------------
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file, send_from_directory, abort, current_app
+from flask_babel import Babel
+from flask_babel import gettext as _
 import sqlite3
 import hashlib
 import secrets
@@ -40,9 +42,10 @@ def parse_bool(value, default=False):
 
 load_dotenv(".env")
 ph = argon2.PasswordHasher()
-DATABASE = os.getenv('DATABASE_PATH', os.path.join(os.getcwd(), 'database', 'credentials.db'))
-TEMPLATE = "Rapport_de_prévention_incendie_template.docx"
 DEFAULT_FILE_PATH = os.getenv('DEFAULT_FILE_PATH', os.path.join(os.getcwd(), 'instance', 'reports'))
+DATABASE_PATH = os.getenv('DATABASE_PATH', os.path.join(DEFAULT_FILE_PATH, 'database'))
+DATABASE = os.getenv('DATABASE_PATH', os.path.join(os.getcwd(), 'database', 'credentials.db'))
+TEMPLATE = "Word_template.docx"
 BUG_FOLDER = os.getenv('BUG_FOLDER', os.path.join(DEFAULT_FILE_PATH, 'BugReports'))
 LOG_FOLDER = os.getenv('LOG_FOLDER', os.path.join(DEFAULT_FILE_PATH, 'logs'))
 FLASK_DEBUG = parse_bool(os.getenv('FLASK_DEBUG', 'False'), False)
@@ -56,6 +59,7 @@ SESSION_COOKIE_SAMESITE = "Lax"
 os.makedirs(DEFAULT_FILE_PATH, exist_ok=True)
 os.makedirs(BUG_FOLDER, exist_ok=True)
 os.makedirs(LOG_FOLDER, exist_ok=True)
+os.makedirs(DATABASE_PATH, exist_ok=True)
 LOG_FILE = os.path.join(LOG_FOLDER, f'log_{datetime.today().strftime("%Y-%m-%d")}.log')
 if not os.path.exists(LOG_FILE):
     with open(LOG_FILE, 'w') as fp:
@@ -100,7 +104,10 @@ dictConfig(
         "handlers": ["file", "console"]},
     }
 )
+def get_locale():
+    return request.accept_languages.best_match(['fr', 'en'])
 app = Flask(__name__)
+babel = Babel(app, locale_selector=get_locale)
 SECRET_KEY = os.getenv('SECRET_KEY')
 if not SECRET_KEY:
     raise RuntimeError("SECRET_KEY missing")
@@ -318,17 +325,17 @@ def login():
         session["uname"] = uname
         current_app.logger.info(f"User {uname} has successfully logged in")
         modify_lastIP(ip, uname)
-        flash("Login successful!", "success")
+        flash(_("Login successful!"), "success")
         return redirect(url_for("dashboard"))
     
     elif (check_credentials(uname, pswd)[0] == True) and (check_credentials(uname, pswd)[1] == False):
         current_app.logger.warning(f"User {uname} tried to log in but hasn't confirmed their email address.")
-        flash("User not verified, please confirm your email before login in")
+        flash(_("User not verified, please confirm your email before login in"))
         modify_lastIP(ip, uname)
         return redirect(url_for("home"))
 
     current_app.logger.warning(f"Someone with ip address {ip} tried to connect to the account named {uname} with the wrong password")
-    flash("Invalid credentials!", "error")
+    flash(_("Invalid credentials!"), "error")
     return redirect(url_for("login"))
 
 
@@ -345,20 +352,20 @@ def register():
 
     if pswd != confirm:
         current_app.logger.info(f"A new user tried to create an account with the name {uname} but did not input the same password.")
-        flash("Passwords do not match!", "error")
+        flash(_("Passwords do not match!"), "error")
         return redirect(url_for("register"))
 
     if create_account(uname, pswd, email):
         current_app.logger.info(f"A new user with username {uname} has been created.")
         modify_lastIP(ip, uname)
-        flash("Account created!", "success")
+        flash(_("Account created!"), "success")
         hashed_user = hashlib.sha256(uname.encode()).hexdigest() # pyright: ignore[reportOptionalMemberAccess]
         send_confirmation_email(uname, email, url_for("confirmation_email", user_code=hashed_user, _external=True))
         current_app.logger.info(f"A confirmation email has been send to user {uname} at the email address {email}.")
         return redirect(url_for("login"))
     
     current_app.logger.warning(f"Someone with IP address {ip} tried creating an account that already existed")
-    flash("Username or email already exists in the system!", "error")
+    flash(_("Username or email already exists in the system!"), "error")
     return redirect(url_for("register"))
 
 
@@ -378,7 +385,9 @@ def settings():
     if request.method == "POST":
         id = request.form.get("id", "")
         if id == "delete_account":
-            flash(f"Votre compte avec le nom d'utilisateur {session['uname']} a été supprimé", "info")
+            flash(_("Your account with username %(uname)s has been deleted") % {
+                "uname": session['uname']
+            }, "info")
             del_user(session['uname'])
             session["logged_in"] = False
             return redirect(url_for("home"))
@@ -406,17 +415,17 @@ def change_password():
         if code == session.get("passcode") and new_pass != None:
             change_password_func(uname, new_pass)
             session["logged_in"] = False
-            flash("Mot de passe changé, utilisateur déconnecté.")
+            flash("Password changed, user disconnected.")
             session.pop("passcode", None)
             return redirect(url_for("login"))
         elif code != session.get("passcode"): 
-            flash("Mauvais code")
+            flash("Wrong password")
             session.pop("passcode", None)
             return redirect(url_for("login"))
         elif new_pass == None:
-            flash("Veuillez entrer un mot de passe.")
+            flash("Please enter a password.")
         else:
-            flash("Erreur.")
+            flash("Error.")
             session.pop("passcode", None)
             return redirect(url_for("home"))
     return redirect(url_for("home"))
@@ -434,7 +443,7 @@ def rapport():
 
     user_dir = os.path.join(DEFAULT_FILE_PATH, session["uname"])
     os.makedirs(user_dir, exist_ok=True)
-    current_app.logger.info(f"User {session['uname']} is creating a rapport.")
+    current_app.logger.info(f"User {session['uname']} is creating a pdf.")
     return render_template("rapport.html")
 
 # ---------------- ASYNC JOB SYSTEM ----------------
@@ -452,10 +461,10 @@ def start_report():
     os.makedirs(user_dir, exist_ok=True)
 
     data = request.form.to_dict()
-    name = request.form.get("concerne")
+    name = request.form.get("name")
 
-    OUTPUT_DOCX = os.path.join(user_dir, f"rapport_pour_{name}.docx")
-    OUTPUT_PDF = os.path.join(user_dir, f"rapport_pour_{name}.pdf")
+    OUTPUT_DOCX = os.path.join(user_dir, f"{name}.docx")
+    OUTPUT_PDF = os.path.join(user_dir, f"{name}.pdf")
     jobs[job_id] = {
         "status": "processing",
         "file": OUTPUT_PDF
@@ -582,7 +591,7 @@ def report_bug():
             filename = secure_filename(screenshot.filename)
             screenshot.save(os.path.join(report_folder, filename))
 
-        flash("Bug report submitted successfully.", "success")
+        flash(_("Bug report submitted successfully."), "success")
         send_bug_report(report_folder)
         return redirect(url_for("home"))
 
@@ -604,7 +613,7 @@ def confirmation_email(user_code):
             cur.execute("UPDATE credentials SET confirmed=True WHERE uname=?", (uname,))
             con.commit()
             con.close()
-            flash("You have succesfully confirmed your email", "info")
+            flash(_("You have succesfully confirmed your email"), "info")
             current_app.logger.info(f"User {uname} has confirmed their email address.")
             session['uname'] = uname
             session['logged_in'] = True
@@ -612,11 +621,11 @@ def confirmation_email(user_code):
             return redirect(url_for("dashboard"))
         else:
             current_app.logger.warning(f"Someone with IP address {request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']} has tried to confirm the email address of {uname} with a wrong password.")
-            flash("Wrong password", "error")
+            flash(_("Wrong password"), "error")
             return redirect(url_for("confirmation_email", user_code=user_code))
     else:
         current_app.logger.warning(f"Someone with IP address {request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']} has tried to confirm their email with a wrong link. ")
-        flash("Username does not match confirmation link. Please put the right username.", "error")
+        flash(_("Username does not match confirmation link. Please put the right username."), "error")
         return redirect(url_for("confirmation_email", user_code=user_code))
     
 @app.route("/admin", methods=["GET", "POST"])
@@ -626,14 +635,13 @@ def admin_login():
         return render_template("admin_login.html")
     
     code = request.form.get("code", "None")
-    current_app.logger.debug(f"Received: {repr(code)}")
     admin_password_hash = os.getenv('ADMIN_PASSWORD_HASH', '')
     if verify_admin_password(code, admin_password_hash):
         session["admin_logged_in"] = True
         current_app.logger.warning(f"Someone with IP {request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']} has gotten admin access. Shut down server?")
         return redirect(url_for("admin"))
     current_app.logger.warning(f"Someone with IP address {request.environ.get('HTTP_X_FORWARDED_FOR') if request.environ.get('HTTP_X_FORWARDED_FOR') != None else request.environ['REMOTE_ADDR']} has unsuccessfully tried to get admin access.")
-    flash("Wrong password")
+    flash(_("Wrong password"))
     return redirect(url_for("home"))
 
 @app.route("/admin_logged_in", methods=["GET", "POST"])
@@ -662,17 +670,21 @@ def admin():
                 flash("Command executed.", "success")
             except Exception as e:
                 app.logger.exception("Admin command failed")
-                flash(f"Error: {e}", "error")
+                flash(_("Error: %(e)s") % {
+                    "e": e
+                }, "error")
         if form_id == "del_u_rep":
             user = request.form.get("args")
             try:
                 func = dispatchCommands(COMMAND_TABLE, "DELETE_RAPPORT", {"user": user})
                 func()
                 app.logger.info(f"Deleting the user repports of user {user} has been succesfull.")
-                flash("Success", "info")
+                flash(_("Success"), "info")
             except Exception as e:
                 app.logger.exception(f"Deleting the user repports of user {user} has failed.")
-                flash(f"Error: {e} ", "error")
+                flash(_("Error: %(e)s ") % {
+                    "e": e
+                }, "error")
         # Reload the log after the command executes
         with open(LOG_FILE, "r", encoding="utf-8") as f:
             logs = f.read()
@@ -748,12 +760,12 @@ def download_data():
         filepath = os.path.abspath(os.path.join(user_folder, "data.txt"))
         with open(filepath, "w", encoding="utf-8") as file:
             file.write(
-                f"""Données collectées de l'utilisateur {uname}
+                f"""Data collected from user {uname}
 
-        1. Nom d'utilisateur : {uname}
-        2. Adresse e-mail : {email}
-        3. Adresse e-mail confirmée : {confirmed}
-        4. Dernière adresse IP de connection : {last_ip}
+        1. Username : {uname}
+        2. Email addres : {email}
+        3. Confirmation of email address : {confirmed}
+        4. Last IP connected to the account : {last_ip}
         """
             )
 
@@ -762,12 +774,12 @@ def download_data():
         return send_file(filepath, as_attachment=True)
     elif (check_credentials(uname, pswd)[0] == True) and (check_credentials(uname, pswd)[1] == False):
         current_app.logger.warning(f"User {uname} tried to get their data but hasn't confirmed their email address.")
-        flash("Votre addresse e-mail n'a pas été confirmée. Afin de nous assurer de la sécurité de vos données, veuillez confirmer votre addresse e-mail avant.")
+        flash(_("Your email wasn't confirmed. To make sure your data is safe, we ask that you confirm your email address."))
         modify_lastIP(ip, uname)
         return redirect(url_for("home"))
 
     current_app.logger.warning(f"Someone with ip address {ip} tried to connect to the account named {uname} with the wrong password to collect their data")
-    flash("Données de connection invalides!", "error")
+    flash(_("Invalid credentials!"), "error")
     return redirect(url_for("download_data"))
 @app.route("/delete_data", methods=["POST"])
 def delete_data():
@@ -780,16 +792,16 @@ def delete_data():
     if check_credentials(uname, pswd)[0] and check_credentials(uname, pswd)[1]:
         modify_lastIP(None, uname)
         current_app.logger.info(f"User {uname} deleted their non essential personal data.")
-        flash("Vous avez supprimé vos données non essentielles.", "info")
+        flash(_("You have deleted your non-essential data."), "info")
         return redirect(url_for("download_data"))
     elif (check_credentials(uname, pswd)[0] == True) and (check_credentials(uname, pswd)[1] == False):
         current_app.logger.warning(f"User {uname} tried to delete their data but hasn't confirmed their email address.")
-        flash("Votre addresse e-mail n'a pas été confirmée. Afin de nous assurer de la sécurité de vos données, veuillez confirmer votre addresse e-mail avant.", "info")
+        flash(_("Your email wasn't confirmed. To make sure your data is safe, we ask that you confirm your email address."), "info")
         modify_lastIP(ip, uname)
         return redirect(url_for("home"))
 
     current_app.logger.warning(f"Someone with ip address {ip} tried to connect to the account named {uname} with the wrong password to delete their data")
-    flash("Données de connection invalides!", "error")
+    flash(_("Invalid credentials!"), "error")
     return redirect(url_for("download_data"))
 # ---------------- RUN ---------------
 

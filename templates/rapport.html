@@ -281,22 +281,25 @@
 
             <ul class="input">
                 <li>
-                    <span><input type="text" class="form-input" name="A_CONDITION" value="{{ A_CONDITION }}" style="width: 500px;">This is an example of a checkbox input</span>
+                    <span></span><input type="text" class="form-input" name="name" value="{{ name }}" style="width: 500px;">{{ _("Enter the doc name") }}</span>
+                </li>
+                <li>
+                    <span><input type="form-checkbox" class="form-input" name="A_CONDITION" value="true" {% if A_CONDITION %}checked{% endif %} style="width: 500px;">{{ _("This is an example of a checkbox input") }}</span>
                 </li>
             <p class="form-row">
-                <input type="checkbox" class="form-checkbox" name="var" value="true" {% if var %}checked{% endif %}> This is an example of an input
+                <input type="checkbox" class="text" class="form-input" name="var" value="{{ var }}"> {{ _("This is an example of an input") }}
             </p>    
             <p>
-                Configure the rest of the file like a normal html file
+                {{ _("Configure the rest of the file like a normal html file") }}
             </p>
             <div class="form-actions" id="rapportForm">
-                <button type="button" class="btn btn-secondary" onclick="resetForm()">Réinitialiser</button>
-                <button type="submit" class="btn">Générer et Sauvegarder le Rapport</button>
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">{{ _("Reset") }}</button>
+                <button type="submit" class="btn">{{ _("Create and save the PDF") }}</button>
             </div>
 
             {% if success %}
             <div class="success-message">
-                ✅ Rapport généré et sauvegardé avec succès !
+                {{ _("✅ PDF created with success !") }}
             </div>
             {% endif %}
         </form>

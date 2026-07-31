@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Connexion administrateur{% endblock %}
+{% block title %}{{ _("Admin login") }}{% endblock %}
 
 {% block content %}
-    <h1>Connexion administrateur</h1>
+    <h1>{{ _("Admin login") }}</h1>
     <form method="POST">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-group">
-            <label for="code">Mot de passe :</label>
+            <label for="code">{{ _("password") }} :</label>
             <input type="password" id="code" name="code" required>
         </div>
 
-        <button type="submit">Se connecter</button>
+        <button type="submit">{{ _("Login") }}</button>
     </form>
 {% endblock %}
 
