@@ -31,3 +31,5 @@ def delete_table():
 def dac(): #create and delete table
     delete_table()
     create_table()
+def close():
+    con.close()

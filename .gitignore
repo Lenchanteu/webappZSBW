@@ -219,3 +219,9 @@ __marimo__/
 PLAN_ACTION.md
 SECURITY_AUDIT.md
 *.codediagram
+
+#Internal files
+internal/
+~$pport_de_prévention_incendie_template.docx
+database/credentials.db
+
