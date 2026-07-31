@@ -3,3 +3,4 @@ Flask-WTF
 python-dotenv
 argon2-cffi
 Werkzeug
+pythoncom
