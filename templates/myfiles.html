@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 
-{% block title %}Mes rapports{% endblock %}
+{% block title %}{{ _("My files") }}{% endblock %}
 
 {% block content %}
     <section class="card">
-        <p class="eyebrow">Documents</p>
-        <h1>Mes rapports</h1>
-        <p>Retrouvez ici l’ensemble des rapports disponibles à télécharger.</p>
+        <p class="eyebrow">{{ _("Documents") }}</p>
+        <h1>{{ _("My files") }}</h1>
+        <p>{{ _("You can find and download all your files here") }}</p>
 
         {% if files %}
             <div class="table-wrapper">
                 <table class="file-table">
                     <thead>
                         <tr>
-                            <th>Nom du fichier</th>
-                            <th>Taille</th>
+                            <th>{{ _("File name") }}</th>
+                            <th>{{ _("Size") }}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -25,7 +25,7 @@
                                 <td>{{ file.size }} KB</td>
                                 <td>
                                     <a class="button-link small" href="{{ url_for('downloads', filename=file.name) }}">
-                                        Télécharger
+                                        {{ _("Download") }}
                                     </a>
                                 </td>
                             </tr>
@@ -35,7 +35,7 @@
             </div>
         {% else %}
             <div class="empty-state">
-                <p>Aucun rapport trouvé pour le moment.</p>
+                <p>{{ _("No files found yet, create one and come back here.") }}</p>
             </div>
         {% endif %}
     </section>

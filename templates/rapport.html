@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Generate Fire Prevention Report{% endblock %}
+{% block title %}{{ _("Generate your file") }}{% endblock %}
 
 {% block styles %}
 {{ super() }}
@@ -271,7 +271,7 @@
 {% block content %}
 <div class="container">
     <h1 class="title-section">
-        <h1>Rapport de prévention incendie</h1>
+        <h1>{{ _("File generation") }}</h1>
     </h1>
 
     <div class="form-section">

@@ -1,43 +1,39 @@
 {% extends "base.html" %}
 
-{% block title %}Paramètres{% endblock %}
+{% block title %}{{ _("Settings") }}{% endblock %}
 
 {% block content %}
-    <h1>Paramètres du compte</h1>
-
-    <p>
-        Gérez les paramètres de votre compte depuis cette page.
-    </p>
+    <h1>{{ _("Account settings") }}</h1>
 
     <hr>
 
-    <h2>Changer le mot de passe</h2>
+    <h2>{{ _("Change your password:") }}</h2>
     <p>
-        Vous pouvez modifier votre mot de passe en cliquant sur le bouton ci-dessous.
+        {{ _("You can change your password by clicking the button below.") }}
     </p>
 
     <form method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
         <input type="hidden" name="id" value="change_password">
-        <button type="submit">Changer le mot de passe</button>
+        <button type="submit">{{ _("Change your password") }}</button>
     </form>
 
     <br>
 
     <hr>
 
-    <h2>Supprimer le compte</h2>
+    <h2>{{ _("Delete your account") }}</h2>
     <p style="color: red;">
-        <strong>Attention :</strong> Cette action est irréversible. Toutes vos données seront définitivement supprimées.
+        <strong>{{ _("Danger:") }}</strong> {{ _("This action is irreversible. All your data will be permanently deleted.") }}
     </p>
 
-    <form method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
+    <form method="POST" onsubmit="return confirm('Are you sure you want to delete your account? This action is irreversible.');">
      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
         <input type="hidden" name="id" value="delete_account">
         <button type="submit" style="background-color: red; color: white;">
-            Supprimer mon compte
+            {{ _("Delete my account") }}
         </button>
     </form>
 

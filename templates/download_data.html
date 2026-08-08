@@ -1,72 +1,67 @@
 {% extends "base.html" %}
 
-{% block title %}Demande de transmission des données{% endblock %}
+{% block title %}{{ _("Data transmission request") }}{% endblock %}
 
 {% block content %}
 
-<h2>Demande de transmission des données collectées</h2>
+<h2>{{ _("Data transmission request") }}</h2>
 
 <p>
-Conformément au RGPD, vous pouvez demander l'accès à vos données personnelles,
-leur rectification, leur suppression ou leur export. Vous pouvez effectuer ces
-demandes à partir de cette page.
+{{ _("In accordance with the GDPR, you can request access to your personal data, its rectification, erasure, or export. You can make these requests from this page.") }}
 </p>
 
 <p>
-En cliquant sur le bouton ci-dessous, un fichier contenant les données personnelles
-associées à votre compte sera généré et téléchargé. Ce fichier comprend uniquement
-les informations enregistrées pour le fonctionnement de votre compte.
+{{ ("By clicking the button below, a file containing the personal data associated with your account will be generated and downloaded. This file only includes information recorded for the operation of your account.") }}
 </p>
 
-<h3>Données incluses :</h3>
+<h3>{{ _("Data included:") }}</h3>
 
 <ul>
-    <li>1. Nom d'utilisateur</li>
-    <li>2. Adresse e-mail</li>
-    <li>3. État de confirmation de l'adresse e-mail</li>
-    <li>4. Dernière adresse IP de connexion</li>
+    <li>1. {{ _("Username") }}</li>
+    <li>2. {{ _("Email address") }}</li>
+    <li>3. {{ _("Confirmation of your email") }}</li>
+    <li>4. {{ _("Last IP address connected") }}</li>
 </ul>
 
 <p>
-Pour des raisons de sécurité, votre mot de passe haché (Argon2id) ainsi que les
-informations techniques associées à son stockage ne sont pas inclus dans l'export.
+{{ ("For security reasons, your hashed password (Argon2id) and the technical information associated with its storage are not included in the export.") }}
 </p>
 
 <p>
-    Pour protéger vos données personnelles, une authentification est nécessaire
-    avant de pouvoir télécharger les informations associées à votre compte.
+    {{ _("To protect your personal data, authentication is required
+before you can download information associated with your account.") }}
 </p>
 
 <form method="POST" action="{{ url_for('download_data') }}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="form-group">
-            <label for="uname">Nom d'utilisateur :</label>
+            <label for="uname">{{ _("Username:") }}</label>
             <input type="text" id="uname" name="uname" required autocomplete="username">
         </div>
         <div class="form-group">
-            <label for="pswd">Mot de passe :</label>
+            <label for="pswd">{{ _("Password:") }}</label>
             <input type="password" id="pswd" name="pswd" required autocomplete="current-password">
         </div>
-    <button type="submit">Télécharger mes données</button>
+    <button type="submit">{{ _("Download my data") }}</button>
 </form>
 
 <p>
-    En remplissant le formulaire ci-dessous, vous pouvez supprimés des données non-essentielles de votre compte. Si vous voulez supprimer toutes les données collectés vous concernant, veuillez procéder à une suppression de votre compte ici: <a href="#">Suppression du compte</a>.
+    {{ _("By filling out the form below, you can remove non-essential data from your account. If you want to delete all data collected about you, please delete your account here:") }} <a href="#">{{ _("Delete your account") }}</a>.
 </p>
-<h3>Données non essentielles :</h3>
+<h3>{{ _("Non essential data:") }}</h3>
 <ul>
-    1. Dernière adresse IP de connexion
+    1. {{ _("Last IP address connected") }}
 </ul>
 <form method="POST" action="{{ url_for('delete_data')}}">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="form-group">
-            <label for="uname">Nom d'utilisateur :</label>
+            <label for="uname">{{ _("Username:") }}</label>
             <input type="text" id="uname" name="uname" required autocomplete="username">
         </div>
         <div class="form-group">
-            <label for="pswd">Mot de passe :</label>
+            <label for="pswd">{{ _("Password:") }}</label>
             <input type="password" id="pswd" name="pswd" required autocomplete="current-password">
         </div>
-    <button type="submit">Supprimer mes données non essentielles</button>
+    <button type="submit">{{ _("Delete my non-essential data") }}</button>
 </form>
 {% endblock %}

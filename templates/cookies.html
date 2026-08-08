@@ -1,93 +1,86 @@
 {% extends "base.html" %}
 
-{% block title %}Politique de confidentialité{% endblock %}
+{% block title %}{{ _("Privacy Policy") }}{% endblock %}
 
 {% block content %}
 
-<h1>Politique de confidentialité</h1>
+<h1>{{ _("Privacy Policy") }}</h1>
 
-<h2>Cookies utilisés</h2>
+<p>{{ _("This app was developped in the European Union, a privacy policy is mandatory inside of it to explain to the user why their info is collected and how it is used.") }}</p>
 
-<p>Cette WebApp utilise uniquement des cookies strictement nécessaires à son fonctionnement.</p>
+<h2>{{ _("Cookies in use:") }}</h2>
+
+<p>{{ _("This app only uses essential cookies that are required for operation.") }}</p>
 
 <ul>
-    <li>Nom d'utilisateur : identification du compte.</li>
-    <li>Session utilisateur : maintien de la connexion.</li>
-    <li>Session administrateur : accès à l'interface d'administration.</li>
+    <li>{{ _("Username") }} : {{ _("account identification.") }}</li>
+    <li>{{ _("User session") }} : {{ _("maintaining the connection.") }}</li>
+    <li>{{ _("Admin session") }} : {{ _("access to the admin interface.") }}</li>
 </ul>
 
 <p>
-Ces cookies sont conservés uniquement pendant la durée de la session de l'utilisateur.
+{{ _("These cookies are stored for the duration of the user session.") }}
 </p>
 
-<h2>Données personnelles collectées</h2>
+<h2>{{ _("Personal data collected:") }}</h2>
 
-<p>Les données suivantes sont enregistrées afin d'assurer le fonctionnement de l'application web :</p>
+<p>{{ _("These datas are only stored to maintain the correct operation of the app") }} :</p>
 
 <ul>
-    <li>Nom d'utilisateur.</li>
-    <li>Mot de passe haché à l'aide de l'algorithme Argon2id.</li>
-    <li>Adresse e-mail.</li>
-    <li>État de confirmation de l'adresse e-mail.</li>
-    <li>Dernière adresse IP utilisée pour se connecter.</li>
+    <li>{{ _("User name.") }}</li>
+    <li>{{ _("Password hash (hashed using the algorithm Argon2id).") }}</li>
+    <li>{{ _("Email address.") }}</li>
+    <li>{{ _("Confirmation of the email address.") }}</li>
+    <li>{{ _("Last IP address connected to the account.") }}</li>
 </ul>
 
 <p>
-Ces données sont conservées tant que le compte est actif. Elles sont supprimées dans un délai raisonnable après la suppression du compte, sauf obligation légale contraire.
-Certaines de ces informations peuvent être modifiées par l'utilisateur ou par le serveur selon leur nature.
+{{ _("This data is retained as long as the account is active. It is deleted within a reasonable timeframe after account deletion, unless otherwise required by law.
+Some of this information may be modified by the user or by the server, depending on its nature.") }}
 </p>
 
-<h2>Partage des données</h2>
+<h2>{{ _("Third party data sharing:") }}</h2>
 
 <p>
-Aucune donnée personnelle n'est transmise à des entreprises tierces.
-Les données sont stockées uniquement sur le serveur hébergeant cette WebApp.
+{{ _("No personal data is transmitted to third party companies.
+Data is stored only on the server hosting this app.") }}
 </p>
 
 <p>
-    Les données ne sont accessibles qu'aux utilisateurs autorisés et aux administrateurs de l'application lorsque cela est nécessaire à son fonctionnement.
+    {{ _("The data is only accessible to authorized users and application administrators when necessary for its operation.") }}
 </p>
 
-<h2>Journaux d'activité (logs)</h2>
+<h2>{{ _("Activity logs:") }}</h2>
 
 <p>
-Afin d'assurer la sécurité, le bon fonctionnement et la maintenance de cette application web,
-certains événements peuvent être enregistrés dans des journaux d'activité (logs).
+{{ _("To ensure the security, proper functioning and maintenance of this web application,
+certain events may be recorded in activity logs.") }}
 </p>
 
-<p>Ces journaux peuvent notamment contenir :</p>
+<p>{{ _("These journals may contain, among other things:") }}</p>
 
 <ul>
-    <li>Le nom d'utilisateur concerné.</li>
-    <li>La date et l'heure de l'événement.</li>
-    <li>L'adresse IP de la connexion.</li>
-    <li>Le type d'action effectuée (connexion, déconnexion, modification du compte, téléchargement des données, etc.).</li>
-    <li>Les erreurs techniques éventuellement rencontrées.</li>
+    <li>{{ _("The concerned username.") }}</li>
+    <li>{{ _("The date and time of the event.") }}</li>
+    <li>{{ _("The IP address conected.") }}</li>
+    <li>{{ _("The type of action performed (login, logout, account modification, data download, etc.).") }}</li>
+    <li>{{ _("The technical errors that can eventually be encountered.") }}</li>
 </ul>
 
 <p>
-Ces informations sont utilisées uniquement pour la sécurité, le diagnostic des incidents,
-la maintenance de l'application et, si nécessaire, l'audit des actions réalisées.
-Elles ne sont pas transmises à des entreprises tierces et sont conservées pendant une durée
-limitée, proportionnée à leur finalité.
+{{ _("This information is used solely for security, incident diagnosis, application maintenance, and, if necessary, auditing of actions taken.
+It is not shared with third-party companies and is retained for a limited period, proportionate to its purpose.") }}
 </p>
 
-<h2>Rapports de prévention incendie</h2>
+<h2>{{ _("Your rights") }}</h2>
 
 <p>
-    Confornmément au RGPD, les rapports de préventions incendies sont conservées pendant une durée maximale de dix (10) ans à compter de la date de la finition du rapport. 
-</p>
-
-<h2>Vos droits</h2>
-
-<p>
-Conformément au RGPD, vous pouvez demander l'accès à vos données personnelles,
-leur rectification, leur suppression, leur export ainsi que, lorsque cela est
-applicable, la limitation de leur traitement.
+{{ _("In accordance with the GDPR, you can request access to your personal data,
+its rectification, erasure, export, and, where applicable, the restriction of its processing.") }}
 </p>
 
 <a class="btn" href="{{ url_for('download_data') }}">
-    Télécharger mes données
+    {{ _("Download, or delete my data") }}
 </a>
 
 {% endblock %}

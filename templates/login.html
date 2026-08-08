@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}Connection{% endblock %}
+{% block title %}{{ _("Login") }}{% endblock %}
 
 {% block content %}
     <section class="card auth-card">
-        <p class="eyebrow">Connexion</p>
-        <h1>Bon retour !</h1>
-        <p>Accédez à votre tableau de bord pour consulter et créer vos rapports.</p>
+        <p class="eyebrow">{{ _("Login") }}</p>
+        <h1>{{ _("Welcome back !") }}</h1>
+        <p>{{ _("Login to your account to start creating your PDF") }}/p>
         <form method="POST" action="{{ url_for('login') }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <div class="form-group">
-                <label for="uname">Nom d'utilisateur :</label>
+                <label for="uname">{{ _("Username:") }}</label>
                 <input type="text" id="uname" name="uname" required autocomplete="username">
             </div>
             <div class="form-group">
-                <label for="pswd">Mot de passe :</label>
+                <label for="pswd">{{ _("Password:") }}</label>
                 <input type="password" id="pswd" name="pswd" required autocomplete="current-password">
             </div>
-            <button type="submit">Se connecter</button>
+            <button type="submit">{{ _("Login") }}</button>
         </form>
-        <p class="auth-link">Vous n'avez pas de compte ? <a href="{{ url_for('register') }}">Créer un compte</a></p>
+        <p class="auth-link">{{ _("You don't have an account yet ?") }} <a href="{{ url_for('register') }}">{{ _("Create one here") }}</a></p>
     </section>
 {% endblock %}

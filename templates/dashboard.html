@@ -1,25 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}Tableau de bord{% endblock %}
+{% block title %}{{ _("Dashboard") }}{% endblock %}
 
 {% block content %}
     <section class="hero card">
-        <p class="eyebrow">Tableau de bord</p>
-        <h1>Bienvenue, {{ session.get('uname') }} !</h1>
-        <p>Voici votre espace personnel pour retrouver rapidement vos rapports et vos réglages.</p>
+        <p class="eyebrow">{{ _("Dashboard") }}</p>
+        <h1>{{ _("Welcome,") }} {{ session.get('uname') }} !</h1>
+        <p>{{ _("This is your personal space, you can find your files and modify your settings.") }}</p>
     </section>
 
     <div class="info-grid">
         <div class="card">
-            <h2>Actions rapides</h2>
+            <h2>{{ _("Quick actions") }}</h2>
             <ul>
-                <li><a href="{{ url_for('myfiles') }}">Rapports enregistrés</a></li>
-                <li><a href="{{ url_for('settings') }}">Paramètres</a></li>
+                <li><a href="{{ url_for('myfiles') }}">{{ _("Files created") }}</a></li>
+                <li><a href="{{ url_for('settings') }}">{{ _("Settings") }}</a></li>
             </ul>
-        </div>
-        <div class="card">
-            <h2>Prochaine étape</h2>
-            <p>Consultez vos fichiers ou ajustez vos préférences pour continuer votre travail sereinement.</p>
         </div>
     </div>
 {% endblock %}

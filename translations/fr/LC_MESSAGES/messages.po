@@ -1,0 +1,680 @@
+# French translations for PDF generator app.
+# Copyright (C) 2026 Merlin Van Cranem
+# This file is distributed under the same license as the PROJECT project.
+# Van Cranem Merlin vancranemmerlin@gmail.com, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: vancranemmerlin@gmail.com\n"
+"POT-Creation-Date: 2026-08-08 15:29+0200\n"
+"PO-Revision-Date: 2026-08-08 15:29+0200\n"
+"Last-Translator: Van Cranem Merlin vancranemmerlin@gmail.com\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app.py:328
+msgid "Login successful!"
+msgstr ""
+
+#: app.py:333
+msgid "User not verified, please confirm your email before login in"
+msgstr ""
+
+#: app.py:338 app.py:782 app.py:804
+msgid "Invalid credentials!"
+msgstr ""
+
+#: app.py:355
+msgid "Passwords do not match!"
+msgstr ""
+
+#: app.py:361
+msgid "Account created!"
+msgstr ""
+
+#: app.py:368
+msgid "Username or email already exists in the system!"
+msgstr ""
+
+#: app.py:388
+#, python-format
+msgid "Your account with username %(uname)s has been deleted"
+msgstr ""
+
+#: app.py:594
+msgid "Bug report submitted successfully."
+msgstr ""
+
+#: app.py:616
+msgid "You have succesfully confirmed your email"
+msgstr ""
+
+#: app.py:624 app.py:644
+msgid "Wrong password"
+msgstr ""
+
+#: app.py:628
+msgid "Username does not match confirmation link. Please put the right username."
+msgstr ""
+
+#: app.py:673
+#, python-format
+msgid "Error: %(e)s"
+msgstr ""
+
+#: app.py:682
+msgid "Success"
+msgstr ""
+
+#: app.py:685
+#, python-format
+msgid "Error: %(e)s "
+msgstr ""
+
+#: app.py:777 app.py:799
+msgid ""
+"Your email wasn't confirmed. To make sure your data is safe, we ask that "
+"you confirm your email address."
+msgstr ""
+
+#: app.py:795
+msgid "You have deleted your non-essential data."
+msgstr ""
+
+#: email_sender.py:39 templates/download_data.html:22
+msgid "Confirmation of your email"
+msgstr ""
+
+#: email_sender.py:42
+#, python-format
+msgid ""
+"To user %(user)s,\n"
+" You have created an account for the ZSBW application. Please confirm "
+"your email address to use the application. To do so, please click on this"
+" link: %(url)s.\n"
+" Thank you"
+msgstr ""
+
+#: email_sender.py:53
+msgid "Code to change your password"
+msgstr ""
+
+#: email_sender.py:56
+#, python-format
+msgid ""
+"To user %(user)s, You have requested a password change. To confirm your "
+"identity, here is the code to authorize the change: %(passcode)s. Didn't "
+"request a password change? Someone may have obtained your password; we "
+"recommend that you change your password and check the latest logins to "
+"your account."
+msgstr ""
+
+#: templates/401.html:2
+msgid "Error 401"
+msgstr ""
+
+#: templates/401.html:4
+msgid ""
+"Error 401: Autorisation error while loading. \n"
+" Please connect to your account to access this page."
+msgstr ""
+
+#: templates/404.html:2
+msgid "Error 404"
+msgstr ""
+
+#: templates/404.html:4
+msgid "Error 404: We couldn't find the page that you are looking for."
+msgstr ""
+
+#: templates/admin.html:32
+msgid "Server emergency shutdown"
+msgstr ""
+
+#: templates/admin.html:34
+msgid "CCommands"
+msgstr ""
+
+#: templates/admin.html:37
+msgid "Delete user PDF"
+msgstr ""
+
+#: templates/admin.html:42 templates/cookies.html:16
+#: templates/download_data.html:20
+msgid "Username"
+msgstr ""
+
+#: templates/admin.html:46
+msgid "Delete"
+msgstr ""
+
+#: templates/admin.html:49
+msgid "Server logs"
+msgstr ""
+
+#: templates/admin_login.html:3 templates/admin_login.html:6
+msgid "Admin login"
+msgstr ""
+
+#: templates/admin_login.html:10
+msgid "password"
+msgstr ""
+
+#: templates/admin_login.html:14 templates/base.html:21 templates/home.html:10
+#: templates/login.html:3 templates/login.html:7 templates/login.html:21
+msgid "Login"
+msgstr ""
+
+#: templates/base.html:6 templates/base.html:11 templates/base.html:17
+msgid "PDF generator"
+msgstr ""
+
+#: templates/base.html:15 templates/dashboard.html:3 templates/dashboard.html:7
+msgid "Dashboard"
+msgstr ""
+
+#: templates/base.html:16
+msgid "Log out"
+msgstr ""
+
+#: templates/base.html:18 templates/myfiles.html:3 templates/myfiles.html:8
+msgid "My files"
+msgstr ""
+
+#: templates/base.html:20 templates/home.html:3
+msgid "Home"
+msgstr ""
+
+#: templates/base.html:22 templates/register.html:7
+msgid "Register"
+msgstr ""
+
+#: templates/base.html:25 templates/bug_report.html:3
+#: templates/bug_report.html:8
+msgid "Found a bug?"
+msgstr ""
+
+#: templates/base.html:42
+msgid "PDF generation App"
+msgstr ""
+
+#: templates/base.html:42
+msgid "by"
+msgstr ""
+
+#: templates/base.html:42
+msgid "is licensed under"
+msgstr ""
+
+#: templates/base.html:43
+msgid "Cookies"
+msgstr ""
+
+#: templates/bug_report.html:7
+msgid "Support"
+msgstr ""
+
+#: templates/bug_report.html:9
+msgid ""
+"Found a bug? Please give a precise description of the bug and how you got"
+" it. Thank you for helping us make this app better"
+msgstr ""
+
+#: templates/bug_report.html:15
+msgid "Bug description"
+msgstr ""
+
+#: templates/bug_report.html:20
+msgid "Optional screenshot"
+msgstr ""
+
+#: templates/bug_report.html:26
+msgid "Send"
+msgstr ""
+
+#: templates/change_password.html:3 templates/change_password.html:6
+#: templates/change_password.html:42 templates/settings.html:19
+msgid "Change your password"
+msgstr ""
+
+#: templates/change_password.html:9
+msgid ""
+"A verification code was sent to your email address.\n"
+"       Please input it here to verify your identity."
+msgstr ""
+
+#: templates/change_password.html:17
+msgid "Verification code"
+msgstr ""
+
+#: templates/change_password.html:30
+msgid "New password"
+msgstr ""
+
+#: templates/change_password.html:48
+msgid ""
+"After having changed your password, you will be loged out, and will have "
+"to log back in."
+msgstr ""
+
+#: templates/confirmation_email.html:3 templates/confirmation_email.html:6
+msgid "Confirm your email"
+msgstr ""
+
+#: templates/confirmation_email.html:12
+msgid "User name"
+msgstr ""
+
+#: templates/confirmation_email.html:17
+msgid "Password"
+msgstr ""
+
+#: templates/confirmation_email.html:21
+msgid "Submit"
+msgstr ""
+
+#: templates/confirmation_email.html:24
+msgid "You don't have an account ?"
+msgstr ""
+
+#: templates/confirmation_email.html:24 templates/login.html:23
+msgid "Create one here"
+msgstr ""
+
+#: templates/cookies.html:3 templates/cookies.html:7
+msgid "Privacy Policy"
+msgstr ""
+
+#: templates/cookies.html:9
+msgid ""
+"This app was developped in the European Union, a privacy policy is "
+"mandatory inside of it to explain to the user why their info is collected"
+" and how it is used."
+msgstr ""
+
+#: templates/cookies.html:11
+msgid "Cookies in use:"
+msgstr ""
+
+#: templates/cookies.html:13
+msgid "This app only uses essential cookies that are required for operation."
+msgstr ""
+
+#: templates/cookies.html:16
+msgid "account identification."
+msgstr ""
+
+#: templates/cookies.html:17
+msgid "User session"
+msgstr ""
+
+#: templates/cookies.html:17
+msgid "maintaining the connection."
+msgstr ""
+
+#: templates/cookies.html:18
+msgid "Admin session"
+msgstr ""
+
+#: templates/cookies.html:18
+msgid "access to the admin interface."
+msgstr ""
+
+#: templates/cookies.html:22
+msgid "These cookies are stored for the duration of the user session."
+msgstr ""
+
+#: templates/cookies.html:25
+msgid "Personal data collected:"
+msgstr ""
+
+#: templates/cookies.html:27
+msgid "These datas are only stored to maintain the correct operation of the app"
+msgstr ""
+
+#: templates/cookies.html:30
+msgid "User name."
+msgstr ""
+
+#: templates/cookies.html:31
+msgid "Password hash (hashed using the algorithm Argon2id)."
+msgstr ""
+
+#: templates/cookies.html:32
+msgid "Email address."
+msgstr ""
+
+#: templates/cookies.html:33
+msgid "Confirmation of the email address."
+msgstr ""
+
+#: templates/cookies.html:34
+msgid "Last IP address connected to the account."
+msgstr ""
+
+#: templates/cookies.html:38
+msgid ""
+"This data is retained as long as the account is active. It is deleted "
+"within a reasonable timeframe after account deletion, unless otherwise "
+"required by law.\n"
+"Some of this information may be modified by the user or by the server, "
+"depending on its nature."
+msgstr ""
+
+#: templates/cookies.html:42
+msgid "Third party data sharing:"
+msgstr ""
+
+#: templates/cookies.html:45
+msgid ""
+"No personal data is transmitted to third party companies.\n"
+"Data is stored only on the server hosting this app."
+msgstr ""
+
+#: templates/cookies.html:50
+msgid ""
+"The data is only accessible to authorized users and application "
+"administrators when necessary for its operation."
+msgstr ""
+
+#: templates/cookies.html:53
+msgid "Activity logs:"
+msgstr ""
+
+#: templates/cookies.html:56
+msgid ""
+"To ensure the security, proper functioning and maintenance of this web "
+"application,\n"
+"certain events may be recorded in activity logs."
+msgstr ""
+
+#: templates/cookies.html:60
+msgid "These journals may contain, among other things:"
+msgstr ""
+
+#: templates/cookies.html:63
+msgid "The concerned username."
+msgstr ""
+
+#: templates/cookies.html:64
+msgid "The date and time of the event."
+msgstr ""
+
+#: templates/cookies.html:65
+msgid "The IP address conected."
+msgstr ""
+
+#: templates/cookies.html:66
+msgid ""
+"The type of action performed (login, logout, account modification, data "
+"download, etc.)."
+msgstr ""
+
+#: templates/cookies.html:67
+msgid "The technical errors that can eventually be encountered."
+msgstr ""
+
+#: templates/cookies.html:71
+msgid ""
+"This information is used solely for security, incident diagnosis, "
+"application maintenance, and, if necessary, auditing of actions taken.\n"
+"It is not shared with third-party companies and is retained for a limited"
+" period, proportionate to its purpose."
+msgstr ""
+
+#: templates/cookies.html:75
+msgid "Your rights"
+msgstr ""
+
+#: templates/cookies.html:78
+msgid ""
+"In accordance with the GDPR, you can request access to your personal "
+"data,\n"
+"its rectification, erasure, export, and, where applicable, the "
+"restriction of its processing."
+msgstr ""
+
+#: templates/cookies.html:83
+msgid "Download, or delete my data"
+msgstr ""
+
+#: templates/dashboard.html:8
+msgid "Welcome,"
+msgstr ""
+
+#: templates/dashboard.html:9
+msgid ""
+"This is your personal space, you can find your files and modify your "
+"settings."
+msgstr ""
+
+#: templates/dashboard.html:14
+msgid "Quick actions"
+msgstr ""
+
+#: templates/dashboard.html:16
+msgid "Files created"
+msgstr ""
+
+#: templates/dashboard.html:17 templates/settings.html:3
+msgid "Settings"
+msgstr ""
+
+#: templates/download_data.html:3 templates/download_data.html:7
+msgid "Data transmission request"
+msgstr ""
+
+#: templates/download_data.html:10
+msgid ""
+"In accordance with the GDPR, you can request access to your personal "
+"data, its rectification, erasure, or export. You can make these requests "
+"from this page."
+msgstr ""
+
+#: templates/download_data.html:17
+msgid "Data included:"
+msgstr ""
+
+#: templates/download_data.html:21
+msgid "Email address"
+msgstr ""
+
+#: templates/download_data.html:23 templates/download_data.html:53
+msgid "Last IP address connected"
+msgstr ""
+
+#: templates/download_data.html:31
+msgid ""
+"To protect your personal data, authentication is required\n"
+"before you can download information associated with your account."
+msgstr ""
+
+#: templates/download_data.html:38 templates/download_data.html:58
+#: templates/login.html:14 templates/register.html:13
+msgid "Username:"
+msgstr ""
+
+#: templates/download_data.html:42 templates/download_data.html:62
+#: templates/login.html:18 templates/register.html:22
+msgid "Password:"
+msgstr ""
+
+#: templates/download_data.html:45
+msgid "Download my data"
+msgstr ""
+
+#: templates/download_data.html:49
+msgid ""
+"By filling out the form below, you can remove non-essential data from "
+"your account. If you want to delete all data collected about you, please "
+"delete your account here:"
+msgstr ""
+
+#: templates/download_data.html:49 templates/settings.html:26
+msgid "Delete your account"
+msgstr ""
+
+#: templates/download_data.html:51
+msgid "Non essential data:"
+msgstr ""
+
+#: templates/download_data.html:65
+msgid "Delete my non-essential data"
+msgstr ""
+
+#: templates/home.html:8
+msgid "Create and export your custom PDF with simplicity"
+msgstr ""
+
+#: templates/home.html:11 templates/register.html:3 templates/register.html:8
+msgid "Create an account"
+msgstr ""
+
+#: templates/home.html:17
+msgid "Admin"
+msgstr ""
+
+#: templates/home.html:18
+msgid "To access the administration area, click on"
+msgstr ""
+
+#: templates/home.html:18
+msgid "Admin dashboard"
+msgstr ""
+
+#: templates/loading.html:5
+msgid "Creating your PDF..."
+msgstr ""
+
+#: templates/loading.html:47
+msgid "Working behind the scene..."
+msgstr ""
+
+#: templates/login.html:8
+msgid "Welcome back !"
+msgstr ""
+
+#: templates/login.html:9
+msgid "Login to your account to start creating your PDF"
+msgstr ""
+
+#: templates/login.html:23
+msgid "You don't have an account yet ?"
+msgstr ""
+
+#: templates/myfiles.html:7
+msgid "Documents"
+msgstr ""
+
+#: templates/myfiles.html:9
+msgid "You can find and download all your files here"
+msgstr ""
+
+#: templates/myfiles.html:16
+msgid "File name"
+msgstr ""
+
+#: templates/myfiles.html:17
+msgid "Size"
+msgstr ""
+
+#: templates/myfiles.html:28
+msgid "Download"
+msgstr ""
+
+#: templates/myfiles.html:38
+msgid "No files found yet, create one and come back here."
+msgstr ""
+
+#: templates/rapport.html:3
+msgid "Generate your file"
+msgstr ""
+
+#: templates/rapport.html:274
+msgid "File generation"
+msgstr ""
+
+#: templates/rapport.html:284
+msgid "Enter the doc name"
+msgstr ""
+
+#: templates/rapport.html:287
+msgid "This is an example of a checkbox input"
+msgstr ""
+
+#: templates/rapport.html:290
+msgid "This is an example of an input"
+msgstr ""
+
+#: templates/rapport.html:293
+msgid "Configure the rest of the file like a normal html file"
+msgstr ""
+
+#: templates/rapport.html:296
+msgid "Reset"
+msgstr ""
+
+#: templates/rapport.html:297
+msgid "Create and save the PDF"
+msgstr ""
+
+#: templates/rapport.html:302
+msgid "✅ PDF created with success !"
+msgstr ""
+
+#: templates/register.html:17
+msgid "Email address:"
+msgstr ""
+
+#: templates/register.html:20
+msgid ""
+"To maximize the security of your account, choose a strong and easy-to-"
+"remember password like Dogs Under The Table."
+msgstr ""
+
+#: templates/register.html:26
+msgid "Confirm your password:"
+msgstr ""
+
+#: templates/register.html:29
+msgid "Create your account"
+msgstr ""
+
+#: templates/register.html:31
+msgid "You already have an account?"
+msgstr ""
+
+#: templates/register.html:31
+msgid "Login here"
+msgstr ""
+
+#: templates/settings.html:6
+msgid "Account settings"
+msgstr ""
+
+#: templates/settings.html:10
+msgid "Change your password:"
+msgstr ""
+
+#: templates/settings.html:12
+msgid "You can change your password by clicking the button below."
+msgstr ""
+
+#: templates/settings.html:28
+msgid "Danger:"
+msgstr ""
+
+#: templates/settings.html:28
+msgid "This action is irreversible. All your data will be permanently deleted."
+msgstr ""
+
+#: templates/settings.html:36
+msgid "Delete my account"
+msgstr ""
+
