@@ -1,3 +1,10 @@
+#------------------COPYRIGHTS----------------
+"""This app is under the CC-BY-4.0 License.
+You may copy parts of this work, and use it in whatever way you want, but you MUST give credit to the author: Merlin Van Cranem
+You can find more information in the LICENSE file
+Developped in the European Union
+PDF generation App © 2026 by Merlin Van Cranem (https://github.com/lenchanteu) is licensed under CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/deed.en)
+"""
 #------------------- IMPORTS ------------------
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file, send_from_directory, abort, current_app
 from flask_babel import Babel

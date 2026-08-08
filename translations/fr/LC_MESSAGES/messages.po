@@ -1,6 +1,6 @@
 # French translations for PDF generator app.
 # Copyright (C) 2026 Merlin Van Cranem
-# This file is distributed under the same license as the PROJECT project.
+# This file is distributed under the same license as the PDF generator project.
 # Van Cranem Merlin vancranemmerlin@gmail.com, 2026.
 #
 msgid ""
@@ -20,76 +20,78 @@ msgstr ""
 
 #: app.py:328
 msgid "Login successful!"
-msgstr ""
+msgstr "Connection réussie"
 
 #: app.py:333
 msgid "User not verified, please confirm your email before login in"
-msgstr ""
+msgstr "Utilisateur non vérifier, veuillez confirmer votre adresse e-mail avant de vous connecter"
 
 #: app.py:338 app.py:782 app.py:804
 msgid "Invalid credentials!"
-msgstr ""
+msgstr "Données de connection invalides !"
 
 #: app.py:355
 msgid "Passwords do not match!"
-msgstr ""
+msgstr "Les mots de passes ne sont pas pareils !"
 
 #: app.py:361
 msgid "Account created!"
-msgstr ""
+msgstr "Compte créé !"
 
 #: app.py:368
 msgid "Username or email already exists in the system!"
-msgstr ""
+msgstr "Votre nom d'utilisateur ou adresse e-mail existe déjà dans le système !"
 
 #: app.py:388
 #, python-format
 msgid "Your account with username %(uname)s has been deleted"
-msgstr ""
+msgstr "Votre compte avec le nom d'utilisateur %(uname)s a été supprimé"
 
 #: app.py:594
 msgid "Bug report submitted successfully."
-msgstr ""
+msgstr "Votre rapport de bug a été enregistré avec succès."
 
 #: app.py:616
 msgid "You have succesfully confirmed your email"
-msgstr ""
+msgstr "Vous avez confirmer votre adresse e-mail"
 
 #: app.py:624 app.py:644
 msgid "Wrong password"
-msgstr ""
+msgstr "Mauvais mot de passe"
 
 #: app.py:628
 msgid "Username does not match confirmation link. Please put the right username."
-msgstr ""
+msgstr "Le nom d'utilisateur n'est pas associés avec le lien de confirmation. Veuillez mettre le bon nom d'utilisateur."
 
 #: app.py:673
 #, python-format
 msgid "Error: %(e)s"
-msgstr ""
+msgstr "Erreur: %(e)s"
 
 #: app.py:682
 msgid "Success"
-msgstr ""
+msgstr "Succès"
 
 #: app.py:685
 #, python-format
 msgid "Error: %(e)s "
-msgstr ""
+msgstr "Erreur: %(e)s"
 
 #: app.py:777 app.py:799
 msgid ""
 "Your email wasn't confirmed. To make sure your data is safe, we ask that "
 "you confirm your email address."
 msgstr ""
+"Votre addresse e-mail n'a pas étée confirmée. Pour assuré la sécurité de vous données,"
+"nous demandons que vous confirmier votre adresse e-mail."
 
 #: app.py:795
 msgid "You have deleted your non-essential data."
-msgstr ""
+msgstr "Vous avez supprimé vos données non-essentielles."
 
 #: email_sender.py:39 templates/download_data.html:22
 msgid "Confirmation of your email"
-msgstr ""
+msgstr "Confirmation de votre adresse e-mail"
 
 #: email_sender.py:42
 #, python-format
@@ -100,10 +102,15 @@ msgid ""
 " link: %(url)s.\n"
 " Thank you"
 msgstr ""
+"À l'utilisateur %(user)s, \n"
+"Vous avez créé(e) un compte pour l'application PDF generator. Veuillez confirmer "
+"votre adresse e-mail pour utiliser l'application. Pour le faire, "
+"veuillez cliquer sur ce lien: %(url)s. \n"
+" Merci"
 
 #: email_sender.py:53
 msgid "Code to change your password"
-msgstr ""
+msgstr "Code pour changer votre mot de passe"
 
 #: email_sender.py:56
 #, python-format
@@ -114,182 +121,195 @@ msgid ""
 "recommend that you change your password and check the latest logins to "
 "your account."
 msgstr ""
+"À l'utilisateur(trice) %(user)s, Vous avez demandé(e) un changement de mot de passe. Pour confirmer votre"
+"identité, voici le code pour autoriser le changement: %(passcode)s. Vous "
+"n'avez pas demander de changer votre mot de passe? Quelqu'un à peut-être réussi à avoir votre mot de passe. Nous recommendons"
+"de changer votre mot de passe et vérifier les dernières connections sur votre compte.
+" "
 
 #: templates/401.html:2
 msgid "Error 401"
-msgstr ""
+msgstr "Erreur 401"
 
 #: templates/401.html:4
 msgid ""
 "Error 401: Autorisation error while loading. \n"
 " Please connect to your account to access this page."
 msgstr ""
+"Erreur 401: Erreur d'autorisation pendant le chargement. \n"
+"Veuillez vous connecter avec votre compte pour accéder à cette page."
 
 #: templates/404.html:2
 msgid "Error 404"
-msgstr ""
+msgstr "Erreur 404"
 
 #: templates/404.html:4
 msgid "Error 404: We couldn't find the page that you are looking for."
-msgstr ""
+msgstr "Erreur 404: Nous ne pouvons pas trouver la page que vous chercher."
 
 #: templates/admin.html:32
 msgid "Server emergency shutdown"
-msgstr ""
+msgstr "Arrêt d'urgence du serveur"
 
 #: templates/admin.html:34
 msgid "CCommands"
-msgstr ""
+msgstr "Commandes"
 
 #: templates/admin.html:37
 msgid "Delete user PDF"
-msgstr ""
+msgstr "Supprimer les PDF de l'utilisateur"
 
 #: templates/admin.html:42 templates/cookies.html:16
 #: templates/download_data.html:20
 msgid "Username"
-msgstr ""
+msgstr "Nom d'utilisateur"
 
 #: templates/admin.html:46
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 #: templates/admin.html:49
 msgid "Server logs"
-msgstr ""
+msgstr "Journaux d'activités (logs) du serveur"
 
 #: templates/admin_login.html:3 templates/admin_login.html:6
 msgid "Admin login"
-msgstr ""
+msgstr "Connection d'administrateur"
 
 #: templates/admin_login.html:10
 msgid "password"
-msgstr ""
+msgstr "mot de passe"
 
 #: templates/admin_login.html:14 templates/base.html:21 templates/home.html:10
 #: templates/login.html:3 templates/login.html:7 templates/login.html:21
 msgid "Login"
-msgstr ""
+msgstr "Connection"
 
 #: templates/base.html:6 templates/base.html:11 templates/base.html:17
 msgid "PDF generator"
-msgstr ""
+msgstr "Générateur de PDF"
 
 #: templates/base.html:15 templates/dashboard.html:3 templates/dashboard.html:7
 msgid "Dashboard"
-msgstr ""
+msgstr "Tableau de bord"
 
 #: templates/base.html:16
 msgid "Log out"
-msgstr ""
+msgstr "Déconnection"
 
 #: templates/base.html:18 templates/myfiles.html:3 templates/myfiles.html:8
 msgid "My files"
-msgstr ""
+msgstr "Mes fichiers"
 
 #: templates/base.html:20 templates/home.html:3
 msgid "Home"
-msgstr ""
+msgstr "Maison"
 
 #: templates/base.html:22 templates/register.html:7
 msgid "Register"
-msgstr ""
+msgstr "Créer un compte"
 
 #: templates/base.html:25 templates/bug_report.html:3
 #: templates/bug_report.html:8
 msgid "Found a bug?"
-msgstr ""
+msgstr "Vous avez trouver un bug?"
 
 #: templates/base.html:42
 msgid "PDF generation App"
-msgstr ""
+msgstr "App de génération de PDF"
 
 #: templates/base.html:42
 msgid "by"
-msgstr ""
+msgstr "par"
 
 #: templates/base.html:42
 msgid "is licensed under"
-msgstr ""
+msgstr "est sous la license"
 
 #: templates/base.html:43
 msgid "Cookies"
-msgstr ""
+msgstr "Cookies"
 
 #: templates/bug_report.html:7
 msgid "Support"
-msgstr ""
+msgstr "Support"
 
 #: templates/bug_report.html:9
 msgid ""
 "Found a bug? Please give a precise description of the bug and how you got"
 " it. Thank you for helping us make this app better"
 msgstr ""
+"Vous avez trouver un bug? Veuillez nous donner une description précise du bug et comment"
+"vous l'avez trouver. Merci de nous aider à faire une meilleur application"
 
 #: templates/bug_report.html:15
 msgid "Bug description"
-msgstr ""
+msgstr "Description du bug"
 
 #: templates/bug_report.html:20
 msgid "Optional screenshot"
-msgstr ""
+msgstr "Capture d'écran optionnelle"
 
 #: templates/bug_report.html:26
 msgid "Send"
-msgstr ""
+msgstr "Envoyer"
 
 #: templates/change_password.html:3 templates/change_password.html:6
 #: templates/change_password.html:42 templates/settings.html:19
 msgid "Change your password"
-msgstr ""
+msgstr "Changer votre mot de passe"
 
 #: templates/change_password.html:9
 msgid ""
 "A verification code was sent to your email address.\n"
 "       Please input it here to verify your identity."
 msgstr ""
+"Un code de vérification a été envoyé à votre adresse e-mail. \n"
+" Veuillez le saisir ici pour vérifier votre identité."
 
 #: templates/change_password.html:17
 msgid "Verification code"
-msgstr ""
+msgstr "Code de vérification"
 
 #: templates/change_password.html:30
 msgid "New password"
-msgstr ""
+msgstr "Nouveau mot de passe"
 
 #: templates/change_password.html:48
 msgid ""
 "After having changed your password, you will be loged out, and will have "
 "to log back in."
 msgstr ""
+"Après avoir changer votre mot de passe, vous serez déconnecter et vous devrez "
+"vous reconnecter."
 
 #: templates/confirmation_email.html:3 templates/confirmation_email.html:6
 msgid "Confirm your email"
-msgstr ""
+msgstr "Confirmer votre adresse e-mail"
 
 #: templates/confirmation_email.html:12
 msgid "User name"
-msgstr ""
+msgstr "Nom d'utilisateur"
 
 #: templates/confirmation_email.html:17
 msgid "Password"
-msgstr ""
+msgstr "Mot de passe"
 
 #: templates/confirmation_email.html:21
 msgid "Submit"
-msgstr ""
+msgstr "Confirmer"
 
 #: templates/confirmation_email.html:24
 msgid "You don't have an account ?"
-msgstr ""
+msgstr "Vous n'avez pas de compte ?"
 
 #: templates/confirmation_email.html:24 templates/login.html:23
 msgid "Create one here"
-msgstr ""
+msgstr "Créé en un ici"
 
 #: templates/cookies.html:3 templates/cookies.html:7
 msgid "Privacy Policy"
-msgstr ""
+msgstr "Politique de vie privée"
 
 #: templates/cookies.html:9
 msgid ""
@@ -297,66 +317,69 @@ msgid ""
 "mandatory inside of it to explain to the user why their info is collected"
 " and how it is used."
 msgstr ""
+"Cette application a étée développée dans l'Union Européene. Un politique de la vie privée est"
+"obligatoire pour expliquer aux utilisateurs pourquoi leurs infos sont collectées"
+"et comment elles sont utilisée."
 
 #: templates/cookies.html:11
 msgid "Cookies in use:"
-msgstr ""
+msgstr "Cookies utilisés"
 
 #: templates/cookies.html:13
 msgid "This app only uses essential cookies that are required for operation."
-msgstr ""
+msgstr "Cette application utilise seulement des cookies qui sont nécéssaires pour sont bon fonctionnement."
 
 #: templates/cookies.html:16
 msgid "account identification."
-msgstr ""
+msgstr "identification du compte."
 
 #: templates/cookies.html:17
 msgid "User session"
-msgstr ""
+msgstr "Session d'utilisateur"
 
 #: templates/cookies.html:17
 msgid "maintaining the connection."
-msgstr ""
+msgstr "maintient de la connection."
 
 #: templates/cookies.html:18
 msgid "Admin session"
-msgstr ""
+msgstr "Session d'administrateur"
 
 #: templates/cookies.html:18
 msgid "access to the admin interface."
-msgstr ""
+msgstr "accès à l'interface d'administration."
 
 #: templates/cookies.html:22
 msgid "These cookies are stored for the duration of the user session."
-msgstr ""
+msgstr "Ces cookies sont stockés pendant la durée de la session de l'utilisateur."
 
 #: templates/cookies.html:25
 msgid "Personal data collected:"
-msgstr ""
+msgstr "Données personelles collectées"
 
 #: templates/cookies.html:27
 msgid "These datas are only stored to maintain the correct operation of the app"
-msgstr ""
+msgstr "Ces données sont stockées seulement pour permettre le fonctionnement correct de l'application"
 
 #: templates/cookies.html:30
 msgid "User name."
-msgstr ""
+msgstr "Nom d'utilisateur."
 
 #: templates/cookies.html:31
 msgid "Password hash (hashed using the algorithm Argon2id)."
-msgstr ""
+msgstr "Hashage du mot de passe (obtenu grace à l'algorithme Argon2id)."
 
 #: templates/cookies.html:32
 msgid "Email address."
-msgstr ""
+msgstr "Adresse email."
 
 #: templates/cookies.html:33
 msgid "Confirmation of the email address."
-msgstr ""
+msgstr "Confirmation de l'adresse email."
 
 #: templates/cookies.html:34
 msgid "Last IP address connected to the account."
-msgstr ""
+msgstr "Dernière adresse IP connecté à votre compte."
 
 #: templates/cookies.html:38
 msgid ""
@@ -366,26 +389,34 @@ msgid ""
 "Some of this information may be modified by the user or by the server, "
 "depending on its nature."
 msgstr ""
+"Ces données sont conservées tant que le compte est actif. Elles sont supprimées"
+"dans un délai raisonnable après la suppression du compte, sauf exceptions légales."
+"Certaines de ces informations peuvent être modifiées par l'utilisateur ou par le serveur,"
+"selon leur nature."
 
 #: templates/cookies.html:42
 msgid "Third party data sharing:"
-msgstr ""
+msgstr "Partage à des services thierces :"
 
 #: templates/cookies.html:45
 msgid ""
 "No personal data is transmitted to third party companies.\n"
 "Data is stored only on the server hosting this app."
 msgstr ""
+"Aucune données personnelles ne sont transmisses à des compagnies thierces. \n"
+"Les données sont conservées seulement sur le service d'hébergement du serveur de cette application:"
 
 #: templates/cookies.html:50
 msgid ""
 "The data is only accessible to authorized users and application "
 "administrators when necessary for its operation."
 msgstr ""
+"Les données ne sont accessibles que par les utilisateurs autorisés et les administrateurs"
+"de l'application lorsque cela est nécéssaires pour son fonctionnement."
 
 #: templates/cookies.html:53
 msgid "Activity logs:"
-msgstr ""
+msgstr "Journaux d'activités (logs) :"
 
 #: templates/cookies.html:56
 msgid ""
@@ -393,32 +424,37 @@ msgid ""
 "application,\n"
 "certain events may be recorded in activity logs."
 msgstr ""
+"Pour assurer la sécurité, le bon fonctionnement ainsi que la maintenance de cette application "
+"web, \n"
+"certains évènements peuvent être enregistrés dans les journaux d'activités (logs)."
 
 #: templates/cookies.html:60
 msgid "These journals may contain, among other things:"
-msgstr ""
+msgstr "Ces journaux peuvent contenir, entre autres :"
 
 #: templates/cookies.html:63
 msgid "The concerned username."
-msgstr ""
+msgstr "Le nom d'utilisateur concerné."
 
 #: templates/cookies.html:64
 msgid "The date and time of the event."
-msgstr ""
+msgstr "La date et l'heure de l'évènement."
 
 #: templates/cookies.html:65
 msgid "The IP address conected."
-msgstr ""
+msgstr "L'adresse IP connectée."
 
 #: templates/cookies.html:66
 msgid ""
 "The type of action performed (login, logout, account modification, data "
 "download, etc.)."
 msgstr ""
+"Le type d'action performée (connection, déconnection, modification du compte, téléchargement de "
+"données, etc.)."
 
 #: templates/cookies.html:67
 msgid "The technical errors that can eventually be encountered."
-msgstr ""
+msgstr "Les erreurs techniques qui peuvent éventuellement se produires."
 
 #: templates/cookies.html:71
 msgid ""
@@ -427,10 +463,14 @@ msgid ""
 "It is not shared with third-party companies and is retained for a limited"
 " period, proportionate to its purpose."
 msgstr ""
+"Ces informations sont utilisées seulement pour la sécurité, le diagnostique d'incidents, "
+"la maintenance de l'application et, si nécéssaires, l'audit des actions prises. \n"
+"Elles ne sont pas partagées avec des compagnies thierces et sont stockées pendant une période"
+" limitée, proportioné à son objectif."
 
 #: templates/cookies.html:75
 msgid "Your rights"
-msgstr ""
+msgstr "Vos droits"
 
 #: templates/cookies.html:78
 msgid ""
@@ -439,36 +479,42 @@ msgid ""
 "its rectification, erasure, export, and, where applicable, the "
 "restriction of its processing."
 msgstr ""
+"En accordance avec le RGPD, vous pouvez demander un accès à vos données"
+" personelles, \n"
+"leur rectification, effacement, exportation et, lorsque applicable, la"
+"restriction de leur traitement."
 
 #: templates/cookies.html:83
 msgid "Download, or delete my data"
-msgstr ""
+msgstr "Télécharger ou supprimer mes donées"
 
 #: templates/dashboard.html:8
 msgid "Welcome,"
-msgstr ""
+msgstr "Bienvenu, "
 
 #: templates/dashboard.html:9
 msgid ""
 "This is your personal space, you can find your files and modify your "
 "settings."
 msgstr ""
+"Ceci est votre espace personnel, où vous pouvez voir vos fichiers et modifier vos"
+"paramètre."
 
 #: templates/dashboard.html:14
 msgid "Quick actions"
-msgstr ""
+msgstr "Actions rapides"
 
 #: templates/dashboard.html:16
 msgid "Files created"
-msgstr ""
+msgstr "Fichiers créés"
 
 #: templates/dashboard.html:17 templates/settings.html:3
 msgid "Settings"
-msgstr ""
+msgstr "Paramètres"
 
 #: templates/download_data.html:3 templates/download_data.html:7
 msgid "Data transmission request"
-msgstr ""
+msgstr "Requête de transmission de données"
 
 #: templates/download_data.html:10
 msgid ""
@@ -476,38 +522,43 @@ msgid ""
 "data, its rectification, erasure, or export. You can make these requests "
 "from this page."
 msgstr ""
+En accordance avec le RGPD, vous pouvez demander un accès à vos données"
+"personelles, leur rectification, effacement ou exportation. Vous pouvez faire ces requêtes"
+"depuis cette page."
 
 #: templates/download_data.html:17
 msgid "Data included:"
-msgstr ""
+msgstr "Données incluses:"
 
 #: templates/download_data.html:21
 msgid "Email address"
-msgstr ""
+msgstr "Adresse e-mail"
 
 #: templates/download_data.html:23 templates/download_data.html:53
 msgid "Last IP address connected"
-msgstr ""
+msgstr "Dernière adresse IP connectée"
 
 #: templates/download_data.html:31
 msgid ""
 "To protect your personal data, authentication is required\n"
 "before you can download information associated with your account."
 msgstr ""
+"Pour protéger vos données personelles, une connection est requise\n"
+"avant que vous pouvez télécharger les données associées à votre compte."
 
 #: templates/download_data.html:38 templates/download_data.html:58
 #: templates/login.html:14 templates/register.html:13
 msgid "Username:"
-msgstr ""
+msgstr "Nom d'utilisateur :"
 
 #: templates/download_data.html:42 templates/download_data.html:62
 #: templates/login.html:18 templates/register.html:22
 msgid "Password:"
-msgstr ""
+msgstr "Mot de passe :"
 
 #: templates/download_data.html:45
 msgid "Download my data"
-msgstr ""
+msgstr "Télécharger mes données"
 
 #: templates/download_data.html:49
 msgid ""
@@ -515,166 +566,171 @@ msgid ""
 "your account. If you want to delete all data collected about you, please "
 "delete your account here:"
 msgstr ""
+"En remplissant le formulaire ci-dessous, vous pouvez supprimer les données non essentielles de votre"
+"compte. Si vous voulez supprimer toute les données collectèes à votre propos, veuillez"
+"suprrimer votre compte ici :"
 
 #: templates/download_data.html:49 templates/settings.html:26
 msgid "Delete your account"
-msgstr ""
+msgstr "Supprimer votre compte"
 
 #: templates/download_data.html:51
 msgid "Non essential data:"
-msgstr ""
+msgstr "Données non essentielles :"
 
 #: templates/download_data.html:65
 msgid "Delete my non-essential data"
-msgstr ""
+msgstr "Supprimer mes données non essentielles"
 
 #: templates/home.html:8
 msgid "Create and export your custom PDF with simplicity"
-msgstr ""
+msgstr "Créer et exporter votre PDF customiser avec simplicité"
 
 #: templates/home.html:11 templates/register.html:3 templates/register.html:8
 msgid "Create an account"
-msgstr ""
+msgstr "Créer un compte"
 
 #: templates/home.html:17
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: templates/home.html:18
 msgid "To access the administration area, click on"
-msgstr ""
+msgstr "Pour accéder au Tableau d'administration, veuillez cliquer sur"
 
 #: templates/home.html:18
 msgid "Admin dashboard"
-msgstr ""
+msgstr "Tableau d'administration"
 
 #: templates/loading.html:5
 msgid "Creating your PDF..."
-msgstr ""
+msgstr "Création de votre PDF..."
 
 #: templates/loading.html:47
 msgid "Working behind the scene..."
-msgstr ""
+msgstr "On travaille derrière l'écran..."
 
 #: templates/login.html:8
 msgid "Welcome back !"
-msgstr ""
+msgstr "Bienvenu !"
 
 #: templates/login.html:9
 msgid "Login to your account to start creating your PDF"
-msgstr ""
+msgstr "Connectez-vous à votre compte pour commencer à créer vos PDF"
 
 #: templates/login.html:23
 msgid "You don't have an account yet ?"
-msgstr ""
+msgstr "Pas encore de compte?"
 
 #: templates/myfiles.html:7
 msgid "Documents"
-msgstr ""
+msgstr "Documents"
 
 #: templates/myfiles.html:9
 msgid "You can find and download all your files here"
-msgstr ""
+msgstr "VOus pouvez trouver et téléchargez tout vos fichiers ici"
 
 #: templates/myfiles.html:16
 msgid "File name"
-msgstr ""
+msgstr "Nom du fichier"
 
 #: templates/myfiles.html:17
 msgid "Size"
-msgstr ""
+msgstr "Taille"
 
 #: templates/myfiles.html:28
 msgid "Download"
-msgstr ""
+msgstr "Télécharger"
 
 #: templates/myfiles.html:38
 msgid "No files found yet, create one and come back here."
-msgstr ""
+msgstr "Aucun fichier déjà trouver, créez en un et revenez après."
 
 #: templates/rapport.html:3
 msgid "Generate your file"
-msgstr ""
+msgstr "Générer votre fichier"
 
 #: templates/rapport.html:274
 msgid "File generation"
-msgstr ""
+msgstr "Génñeration de fichier"
 
 #: templates/rapport.html:284
 msgid "Enter the doc name"
-msgstr ""
+msgstr "Entrer le nom du document"
 
 #: templates/rapport.html:287
 msgid "This is an example of a checkbox input"
-msgstr ""
+msgstr "Ceci est un exemple d'un Checkbox input"
 
 #: templates/rapport.html:290
 msgid "This is an example of an input"
-msgstr ""
+msgstr "Ceci est un example d'un input"
 
 #: templates/rapport.html:293
 msgid "Configure the rest of the file like a normal html file"
-msgstr ""
+msgstr "Configurer le reste du fichier comme un fichier html normal"
 
 #: templates/rapport.html:296
 msgid "Reset"
-msgstr ""
+msgstr "Reset"
 
 #: templates/rapport.html:297
 msgid "Create and save the PDF"
-msgstr ""
+msgstr "Créer et sauvegarder le PDF"
 
 #: templates/rapport.html:302
 msgid "✅ PDF created with success !"
-msgstr ""
+msgstr "✅ PDF créé avec succès !"
 
 #: templates/register.html:17
 msgid "Email address:"
-msgstr ""
+msgstr "Adresse e-mail :"
 
 #: templates/register.html:20
 msgid ""
 "To maximize the security of your account, choose a strong and easy-to-"
 "remember password like Dogs Under The Table."
 msgstr ""
+"Pour maximiser la sécurité de votre compte, choisissez un mot de passe fort et"
+"facile à retenir comme Chien Sous La Table."
 
 #: templates/register.html:26
 msgid "Confirm your password:"
-msgstr ""
+msgstr "Confirmer votre mot de passe :"
 
 #: templates/register.html:29
 msgid "Create your account"
-msgstr ""
+msgstr "Créez votre compte"
 
 #: templates/register.html:31
 msgid "You already have an account?"
-msgstr ""
+msgstr "Vous avez déjà un compte?"
 
 #: templates/register.html:31
 msgid "Login here"
-msgstr ""
+msgstr "Connecter vous ici"
 
 #: templates/settings.html:6
 msgid "Account settings"
-msgstr ""
+msgstr "Paramètre du compte"
 
 #: templates/settings.html:10
 msgid "Change your password:"
-msgstr ""
+msgstr "Changer votre mot de passe :"
 
 #: templates/settings.html:12
 msgid "You can change your password by clicking the button below."
-msgstr ""
+msgstr "Vous pouvez changer votre mot de passe en cliquant sur ce bouton ci-dessous."
 
 #: templates/settings.html:28
 msgid "Danger:"
-msgstr ""
+msgstr "Danger :"
 
 #: templates/settings.html:28
 msgid "This action is irreversible. All your data will be permanently deleted."
-msgstr ""
+msgstr "Cette action est irreversible. Toutes vos données seront supprimées définitivement."
 
 #: templates/settings.html:36
 msgid "Delete my account"
-msgstr ""
+msgstr "Supprimer mon compte"
 

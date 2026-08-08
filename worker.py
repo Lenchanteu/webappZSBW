@@ -12,7 +12,7 @@ def generate_report_job(job_id, data, template, output_docx, output_pdf, jobs):
         convert_to_pdf(output_docx)
 
         jobs[job_id]["status"] = "done"
-        jobs[job_id]["file"] = output_pdf   # 🔥 important
+        jobs[job_id]["file"] = output_pdf   # important
 
     except Exception as e:
         jobs[job_id]["status"] = "error"
