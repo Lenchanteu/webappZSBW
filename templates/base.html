@@ -1,3 +1,8 @@
+<!--Code under a source-available license. See more info in LICENSE
+Author: Merlin Van Cranem 
+Contact: vancranemmerlin@gmail.com
+https://github.com/Lenchanteu
+Last modifications: 30/08/2026 by Merlin Van Cranem -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -7,15 +12,18 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <nav>
-        <div class="logo">ZSBW, bêta 1.0</div>
+    <nav class="topbar" aria-label="Navigation principale">
+        <div class="logo" aria-label="ZSBW logo">
+            <img src="{{ url_for('static', filename='images/logoZSBW.png') }}" alt="ZSBW logo">
+            <span>ZSBW, bêta 1.0</span>
+        </div>
 
         <div class="nav-links">
             {% if session.get('logged_in') %}
                 <a href="{{ url_for('dashboard') }}">Tableau de bord</a>
-                <a href="{{ url_for('logout') }}">Se déconnecter</a>
                 <a href="{{ url_for('rapport') }}">Rapport</a>
                 <a href="{{ url_for('myfiles') }}">Mes rapports</a>
+                <a href="{{ url_for('logout') }}">Se déconnecter</a>
             {% else %}
                 <a href="{{ url_for('home') }}">Accueil</a>
                 <a href="{{ url_for('login') }}">Connexion</a>
@@ -26,7 +34,7 @@
         </div>
     </nav>
 
-    <main class="container">
+    <main class="container page-shell">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -39,8 +47,13 @@
     </main>
 
     <footer class="footer">
-        <a href="https://example.com">ZSBW App</a> © 2026 by <a href="https://example.com">Merlin Van Cranem</a> is licensed under <a href="https://creativecommons.org/licenses/by-nd/4.0/">CC BY-ND 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
-        <p><a href="{{ url_for('cookies') }}">Politique de confidentialité</a></p>
+        <div class="footer-inner">
+            <a href="https://github.com/Lenchanteu/ZSBW-PrevPDF">ZSBW PrevPDF</a>
+            © 2026 par <a href="https://github.com/Lenchanteu">Merlin Van Cranem</a>
+            est sous une license à code source disponible.
+            <a href="https://github.com/Lenchanteu/ZSBW-PrevPDF/LICENSE">Plus d'informations</a>
+            <p><a href="{{ url_for('cookies') }}">Politique de confidentialité</a></p>
+        </div>
     </footer>
 </body>
 </html>

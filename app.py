@@ -1,3 +1,8 @@
+#Code under a source-available license. See more info in LICENSE
+#Author: Merlin Van Cranem 
+#Contact: vancranemmerlin@gmail.com
+#https://github.com/Lenchanteu
+#Last modifications: 30/08/2026 by Merlin Van Cranem
 #------------------- IMPORTS ------------------
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file, send_from_directory, abort, current_app
 import sqlite3

@@ -1,3 +1,8 @@
+<!--Code under a source-available license. See more info in LICENSE
+Author: Merlin Van Cranem 
+Contact: vancranemmerlin@gmail.com
+https://github.com/Lenchanteu
+Last modifications: 30/08/2026 by Merlin Van Cranem -->
 {% extends "base.html" %}
 
 {% block title %}Home{% endblock %}
@@ -14,13 +19,15 @@
     </section>
 
     <div class="info-grid">
-        <div class="card">
+        <article class="card feature-card">
+            <div class="feature-icon">✓</div>
             <h2>À savoir</h2>
             <p>Cette application est encore en phase bêta. Des imperfections peuvent apparaître pendant l’utilisation.</p>
-        </div>
-        <div class="card">
+        </article>
+        <article class="card feature-card">
+            <div class="feature-icon">⚙</div>
             <h2>Administration</h2>
             <p>Pour accéder à l’espace d’administration, cliquez sur <a href="{{ url_for('admin_login') }}">le tableau d’administration</a>.</p>
-        </div>
+        </article>
     </div>
 {% endblock %}

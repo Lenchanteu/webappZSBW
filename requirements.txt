@@ -3,4 +3,6 @@ Flask-WTF
 python-dotenv
 argon2-cffi
 Werkzeug
-pythoncom
+pywin32
+docx2pdf
+docxtpl

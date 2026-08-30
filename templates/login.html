@@ -1,25 +1,34 @@
+<!--Code under a source-available license. See more info in LICENSE
+Author: Merlin Van Cranem 
+Contact: vancranemmerlin@gmail.com
+https://github.com/Lenchanteu
+Last modifications: 30/08/2026 by Merlin Van Cranem -->
 {% extends "base.html" %}
 
 {% block title %}Connection{% endblock %}
 
 {% block content %}
     <section class="card auth-card">
-        <p class="eyebrow">Connexion</p>
-        <h1>Bon retour !</h1>
-        <p>Accédez à votre tableau de bord pour consulter et créer vos rapports.</p>
-        <form method="POST" action="{{ url_for('login') }}">
+        <div class="auth-intro">
+            <p class="eyebrow">Connexion</p>
+            <h1>Bon retour !</h1>
+            <p>Accédez à votre tableau de bord pour consulter et créer vos rapports.</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('login') }}" class="auth-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <div class="form-group">
-                <label for="uname">Nom d'utilisateur :</label>
-                <input type="text" id="uname" name="uname" required autocomplete="username">
+                <label for="uname">Nom d'utilisateur</label>
+                <input type="text" id="uname" name="uname" required autocomplete="username" placeholder="Entrez votre nom d'utilisateur">
             </div>
             <div class="form-group">
-                <label for="pswd">Mot de passe :</label>
-                <input type="password" id="pswd" name="pswd" required autocomplete="current-password">
+                <label for="pswd">Mot de passe</label>
+                <input type="password" id="pswd" name="pswd" required autocomplete="current-password" placeholder="Entrez votre mot de passe">
             </div>
-            <button type="submit">Se connecter</button>
+            <button type="submit" class="auth-submit">Se connecter</button>
         </form>
+
         <p class="auth-link">Vous n'avez pas de compte ? <a href="{{ url_for('register') }}">Créer un compte</a></p>
     </section>
 {% endblock %}

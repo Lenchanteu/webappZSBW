@@ -1,14 +1,22 @@
+#Code under a source-available license. See more info in LICENSE
+#Author: Merlin Van Cranem 
+#Contact: vancranemmerlin@gmail.com
+#https://github.com/Lenchanteu
+#Last modifications: 30/08/2026 by Merlin Van Cranem
+#------------IMPORTS------------
 import smtplib
 import os
 from email.message import EmailMessage
 from dotenv import load_dotenv
 
+#----------VARIABLES--------- (variables come from the .env file)
 load_dotenv()
 EMAIL = os.getenv('SMTP_EMAIL')
 PASSWORD = os.getenv('SMTP_PASSWORD')
 SMTP_SERVER= os.getenv('SMTP_SERVER')
 SMTP_PORT= os.getenv('SMTP_PORT')
 
+#--------------FUNCTIONs------------
 def send_bug_report(report_folder):
     msg = EmailMessage()
     msg["Subject"] = "New Bug Report"

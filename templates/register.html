@@ -1,34 +1,43 @@
+<!--Code under a source-available license. See more info in LICENSE
+Author: Merlin Van Cranem 
+Contact: vancranemmerlin@gmail.com
+https://github.com/Lenchanteu
+Last modifications: 30/08/2026 by Merlin Van Cranem -->
 {% extends "base.html" %}
 
 {% block title %}Créer un compte{% endblock %}
 
 {% block content %}
     <section class="card auth-card">
-        <p class="eyebrow">Inscription</p>
-        <h1>Créer un compte</h1>
-        <p>Rejoignez l’application pour gérer vos rapports de visite efficacement.</p>
-        <form method="POST" action="{{ url_for('register') }}">
+        <div class="auth-intro">
+            <p class="eyebrow">Inscription</p>
+            <h1>Créer un compte</h1>
+            <p>Rejoignez l’application pour gérer vos rapports de visite efficacement.</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('register') }}" class="auth-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <div class="form-group">
-                <label for="uname">Nom d'utilisateur :</label>
+                <label for="uname">Nom d'utilisateur</label>
                 <input type="text" id="uname" name="uname" required placeholder="Nom d'utilisateur">
             </div>
             <div class="form-group">
-                <label for="email">Adresse e-mail :</label>
+                <label for="email">Adresse e-mail</label>
                 <input type="email" id="email" name="email" required placeholder="Adresse e-mail">
             </div>
-            <p>Pour maximiser la sécurité de votre compte, choisissez un mot de passe robuste et facile à retenir.</p>
+            <p class="helper-text">Pour maximiser la sécurité de votre compte, choisissez un mot de passe robuste et facile à retenir.</p>
             <div class="form-group">
-                <label for="pswd">Mot de passe :</label>
+                <label for="pswd">Mot de passe</label>
                 <input type="password" id="pswd" name="pswd" required placeholder="Mot de passe">
             </div>
             <div class="form-group">
-                <label for="confirm_pswd">Confirmer le mot de passe :</label>
+                <label for="confirm_pswd">Confirmer le mot de passe</label>
                 <input type="password" id="confirm_pswd" name="confirm_pswd" required placeholder="Confirmer votre mot de passe">
             </div>
-            <button type="submit" class="btn-register">Créer le compte</button>
+            <button type="submit" class="auth-submit">Créer le compte</button>
         </form>
+
         <p class="auth-link">Vous avez déjà un compte ? <a href="{{ url_for('login') }}">Connectez-vous ici</a></p>
     </section>
 {% endblock %}

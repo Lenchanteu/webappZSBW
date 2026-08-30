@@ -1,3 +1,8 @@
+#Code under a source-available license. See more info in LICENSE
+#Author: Merlin Van Cranem 
+#Contact: vancranemmerlin@gmail.com
+#https://github.com/Lenchanteu
+#Last modifications: 30/08/2026 by Merlin Van Cranem
 from pdf_maker import convert_to_pdf
 from docxtpl import DocxTemplate
 
