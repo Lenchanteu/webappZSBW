@@ -708,6 +708,9 @@ def e_401(error):
 @app.errorhandler(404)
 def e_404(error):
     return render_template("404.html"), 404
+@app.errorhandler(403)
+def e_403(error):
+    return render_template("403.html"), 403
 #------------------ COOKIES EXPLAINATION ----------
 @app.route("/cookies")
 def cookies():

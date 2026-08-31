@@ -13,10 +13,10 @@ Last modifications: 30/08/2026 by Merlin Van Cranem -->
 </head>
 <body>
     <nav class="topbar" aria-label="Navigation principale">
-        <div class="logo" aria-label="ZSBW logo">
+        <a href="{{ url_for('home') }}" class="logo" aria-label="ZSBW, bêta 1.0">
             <img src="{{ url_for('static', filename='images/logoZSBW.png') }}" alt="ZSBW logo">
             <span>ZSBW, bêta 1.0</span>
-        </div>
+        </a>
 
         <div class="nav-links">
             {% if session.get('logged_in') %}
@@ -51,7 +51,7 @@ Last modifications: 30/08/2026 by Merlin Van Cranem -->
             <a href="https://github.com/Lenchanteu/ZSBW-PrevPDF">ZSBW PrevPDF</a>
             © 2026 par <a href="https://github.com/Lenchanteu">Merlin Van Cranem</a>
             est sous une license à code source disponible.
-            <a href="https://github.com/Lenchanteu/ZSBW-PrevPDF/LICENSE">Plus d'informations</a>
+            <a href="https://github.com/Lenchanteu/ZSBW-PrevPDF/blob/main/LICENSE">Plus d'informations</a>
             <p><a href="{{ url_for('cookies') }}">Politique de confidentialité</a></p>
         </div>
     </footer>
