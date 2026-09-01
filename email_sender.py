@@ -2,7 +2,7 @@
 #Author: Merlin Van Cranem 
 #Contact: vancranemmerlin@gmail.com
 #https://github.com/Lenchanteu
-#Last modifications: 30/08/2026 by Merlin Van Cranem
+#Last modifications: 01/09/2026 by Merlin Van Cranem
 #------------IMPORTS------------
 import smtplib
 import os
@@ -61,3 +61,13 @@ def send_passcode(user, email_addrs, passcode):
     with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp: #type: ignore
         smtp.login(EMAIL, PASSWORD) # type: ignore
         smtp.send_message(msg)
+
+def send_PDF_to_people(email_addrs, file):
+    filename = os.path.splitext(os.path.basename(file))
+    filename = filename[0][13:]
+    msg = EmailMessage()
+    msg["Subject"] = "Rapport de prévention incendie concernant " + filename
+    msg["From"] = EMAIL
+    msg["To"] = email_addrs
+    msg.set_content(f"Madame la Bourgmestre, Monsieur le Bourgmestre,\n Dans le cadre de la prévention incendie, la zone de secours du Brabant Wallon a fait une visite sur une implémentation temporaire. Vous pourrez trouver un rapport concernant cette visite attaché à cet email. \n Veuillez agréer, Madame la Bourgmestre, Monsieur le Bourgmestre, l'expression de nos salutations distinguées. \n Ce message à été généré automatiquement par l'application Fire PrevPDF.")
+    msg.add_attachment(file)

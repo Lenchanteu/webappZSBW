@@ -8,7 +8,7 @@ Ce programme permet de générer des fichiers PDF à partir d'un fichier Word et
 
 Ce projet utilise **Microsoft Word** et **Python 3.13.15**. Ces deux programmes sont nécessaires au bon fonctionnement de l'application.
 
-Le projet a été développé et testé avec **Python 3.13.15** et **Microsoft Word 365 — version 16.0.20326.20112**, ou une version compatible. L'auteur ne peut pas garantir le bon fonctionnement de l'application avec d'autres versions de ces programmes.
+Le projet a été dévellopé et testé avec **Python 3.13.15** et **Microsoft Word 365 — version 16.0.20326.20112**, ou une version compatible. L'auteur ne peut pas garantir le bon fonctionnement de l'application avec d'autres versions de ces programmes.
 
 Une adresse e-mail fonctionnelle est également requise.
 
@@ -53,11 +53,11 @@ Ceci est un descriptif technique de l'application. Pour apprendre à utiliser le
 
    **Attention :** veuillez respecter précisément le nom des variables utilisées dans les fichiers. Si ces variables ne sont pas **exactement identiques**, la génération du fichier PDF **ne fonctionnera pas**.
 
-7. Pour toute information complémentaire ou demande, veuillez contacter l'auteur du projet via les discussions du dépôt GitHub, dans la catégorie **General**, ou par e-mail à `vancranemmerlin@gmail.com`.
+7. Pour toute informations complémentaire ou demande, veuillez contacter l'auteur du projet via les discussions du dépôt GitHub, dans la catégorie **General**, ou par e-mail à `vancranemmerlin@gmail.com`.
 
 # Sécurité
 
-Ce programme a été développé en faisant de la sécurité l'une de ses priorités. Afin de contribuer à garantir la sécurité des utilisateurs, l'application utilise notamment :
+Ce programme a été dévellopé en faisant de la sécurité l'une de ses priorités. Afin d'assurer la sécurité des utilisateurs, l'application utilise notamment :
 
 * le hachage des mots de passe avec **Argon2** ;
 * la protection **CSRF** ;
@@ -70,8 +70,12 @@ Il est **fortement recommandé de ne jamais partager les clés de sécurité** p
 
 Si vous pensez que l'une de ces clés a été communiquée à une personne non autorisée, veuillez **les remplacer immédiatement**.
 
+# RGPD
+
+Ce programme a été dévellopé en Belgique, dans l'Union Européenne. Conformément avec les lois de l'Union Européene, les données collectées sont protégées par le [réglement général sur la protection des données](https://www.cnil.fr/fr/reglement-europeen-protection-donnees). Vous pouvez trouver plus d'infos sur la collecte et le traitement des données sur la page `/cookies`. 
+
 # Licence
 
-Ce programme est à code source disponible. Toute personne peut utiliser, modifier et repartager le programme à condition de créditer l'auteur de manière appropriée. Ce programme ne peut pas être vendus sans la permission explicite de l'auteur.
+Ce programme est à code source disponible. Toute personne peut utiliser, modifier et repartager le programme à condition de créditer l'auteur de manière appropriée. Ce programme ne peut pas être vendu sans la permission explicite de l'auteur.
 
-[ZSBW PrevPDF](https://github.com/Lenchanteu/ZSBW-PrevPDF) © 2026 par [Merlin Van Cranem](https://github.com/Lenchanteu) est sous une license à code source disponible. [Plus d'inforamtions](https://github.com/Lenchanteu/ZSBW-PrevPDF/LICENSE).
+[ZSBW PrevPDF](https://github.com/Lenchanteu/ZSBW-PrevPDF) © 2026 par [Merlin Van Cranem](https://github.com/Lenchanteu) est sous une licence à code source disponible. [Plus d'inforamtions](https://github.com/Lenchanteu/ZSBW-PrevPDF/LICENSE).
