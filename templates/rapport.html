@@ -323,6 +323,17 @@ Last modifications: 30/08/2026 by Merlin Van Cranem -->
                 <span><input type="text" class="form-input" name="concerne" value="{{ concerne }}"></span>
             </div>
             <div class="form-row">
+                <label for="commune">Commune concernée:</label>
+
+                <select name="commune" id="commune" required>
+                    <option value="" disabled selected>Choisissez une commune</option>
+
+                    {% for name in email_addrs %}
+                        <option value="{{ name }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-row">
                 <label class="form-label">Chapiteau :</label>
                 <span><input type="checkbox" class="form-checkbox" name="chapiteau" value="true" {% if chapiteau == 'true' %}checked{% endif %}></span>
                 <span>Nombre : <input type="number" class="form-input" name="chapiteau_nombre" value="{{ chapiteau_nombre }}"></span>

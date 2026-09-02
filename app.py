@@ -24,6 +24,7 @@ from flask_wtf.csrf import CSRFProtect
 from dotenv import load_dotenv
 import argon2
 from argon2.exceptions import VerifyMismatchError
+import email_config
 
 from worker import generate_report_job
 from email_sender import send_bug_report, send_confirmation_email, send_passcode
@@ -57,6 +58,7 @@ CREATE_TEST_USER = parse_bool(os.getenv('CREATE_TEST_USER', 'False'), False)
 SESSION_COOKIE_SECURE = not FLASK_DEBUG
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
+BOURG_EMAILS = email_config.EMAILS
 
 os.makedirs(DEFAULT_FILE_PATH, exist_ok=True)
 os.makedirs(BUG_FOLDER, exist_ok=True)
@@ -440,7 +442,7 @@ def rapport():
     user_dir = os.path.join(DEFAULT_FILE_PATH, session["uname"])
     os.makedirs(user_dir, exist_ok=True)
     current_app.logger.info(f"User {session['uname']} is creating a rapport.")
-    return render_template("rapport.html")
+    return render_template("rapport.html", email_addrs=BOURG_EMAILS)
 
 # ---------------- ASYNC JOB SYSTEM ----------------
 @app.route("/start-report", methods=["POST"])
@@ -458,6 +460,9 @@ def start_report():
 
     data = request.form.to_dict()
     name = request.form.get("concerne")
+    commune = request.form.get("commune")
+    send_to_bourg = request.form.get("copie_bourgmestre")
+    
 
     OUTPUT_DOCX = os.path.join(user_dir, f"rapport_pour_{name}.docx")
     OUTPUT_PDF = os.path.join(user_dir, f"rapport_pour_{name}.pdf")
@@ -468,7 +473,7 @@ def start_report():
 
     threading.Thread(
         target=generate_report_job,
-        args=(job_id, data, TEMPLATE, OUTPUT_DOCX, OUTPUT_PDF, jobs)
+        args=(job_id, data, TEMPLATE, OUTPUT_DOCX, OUTPUT_PDF, jobs, commune, send_to_bourg)
     ).start()
 
     return {"job_id": job_id}
