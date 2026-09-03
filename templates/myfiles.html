@@ -32,6 +32,9 @@ Last modifications: 30/08/2026 by Merlin Van Cranem -->
                                     <a class="button-link small" href="{{ url_for('downloads', filename=file.name) }}">
                                         Télécharger
                                     </a>
+                                    <a class="button-link small" href="{{ url_for('edit', report_name=file.name) }}">
+                                        Modifier
+                                    </a>
                                 </td>
                             </tr>
                         {% endfor %}

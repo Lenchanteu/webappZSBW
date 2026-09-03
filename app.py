@@ -2,8 +2,10 @@
 #Author: Merlin Van Cranem 
 #Contact: vancranemmerlin@gmail.com
 #https://github.com/Lenchanteu
-#Last modifications: 30/08/2026 by Merlin Van Cranem
+#Last modifications: 03/09/2026 by Merlin Van Cranem
 #------------------- IMPORTS ------------------
+import json
+
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file, send_from_directory, abort, current_app
 import sqlite3
 import hashlib
@@ -225,7 +227,6 @@ def modify_lastIP(ip, uname):
     con.commit()
     con.close()
 
-
 # ---------------- Functions --------------
 def dispatchCommands(command_table, command_name, args):
     if command_name not in command_table:
@@ -444,6 +445,38 @@ def rapport():
     current_app.logger.info(f"User {session['uname']} is creating a rapport.")
     return render_template("rapport.html", email_addrs=BOURG_EMAILS)
 
+@app.route("/edit/<report_name>")
+def edit(report_name):
+    if not session.get("logged_in"):
+        abort(403)
+
+    uname = session["uname"]
+
+    # Remove the extension from the filename
+    name = os.path.splitext(report_name)[0]
+
+    user_dir = os.path.join(
+        DEFAULT_FILE_PATH,
+        uname,
+        "RAPPORTS"
+    )
+
+    report = os.path.join(
+        user_dir,
+        f"{name}.json"
+    )
+
+    if not os.path.exists(report):
+        abort(404)
+
+    with open(report, "r", encoding="utf-8") as file:
+        data = json.load(file)
+
+    return render_template(
+        "rapport.html",
+        email_addrs=BOURG_EMAILS,
+        report=data
+    )
 # ---------------- ASYNC JOB SYSTEM ----------------
 @app.route("/start-report", methods=["POST"])
 def start_report():
@@ -459,13 +492,23 @@ def start_report():
     os.makedirs(user_dir, exist_ok=True)
 
     data = request.form.to_dict()
+    data.pop("csrf_token", None)
     name = request.form.get("concerne")
     commune = request.form.get("commune")
     send_to_bourg = request.form.get("copie_bourgmestre")
+    status = request.form.get("V_fin")
+    if not status:
+        send_to_bourg = False
+    
     
 
     OUTPUT_DOCX = os.path.join(user_dir, f"rapport_pour_{name}.docx")
     OUTPUT_PDF = os.path.join(user_dir, f"rapport_pour_{name}.pdf")
+    OUTPUT_JSON = os.path.join(user_dir, f"rapport_pour_{name}.json")
+
+    with open(OUTPUT_JSON, 'w') as file:
+        json.dump(data, file)
+
     jobs[job_id] = {
         "status": "processing",
         "file": OUTPUT_PDF
@@ -514,7 +557,6 @@ def debug_jobs():
 def myfiles():
     if not session.get("logged_in"):
         abort(403)
-
     user_folder = os.path.join(DEFAULT_FILE_PATH, session.get("uname", "test"), "RAPPORTS")
 
     if not os.path.exists(user_folder):

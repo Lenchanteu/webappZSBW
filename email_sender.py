@@ -2,7 +2,7 @@
 #Author: Merlin Van Cranem 
 #Contact: vancranemmerlin@gmail.com
 #https://github.com/Lenchanteu
-#Last modifications: 01/09/2026 by Merlin Van Cranem
+#Last modifications: 02/09/2026 by Merlin Van Cranem
 #------------IMPORTS------------
 import smtplib
 import os
