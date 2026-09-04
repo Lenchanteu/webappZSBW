@@ -780,11 +780,13 @@ def user(uname):
     
     return render_template("user.html", user=user, rapports=files)
 
-@app.route("/admn_del_user/<uname>")
+@app.route("/admn_del_user/<uname>", methods=["GET", "POST"])
 def admn_del_user(uname):
+    if not session.get("admin_logged_in"):
+        abort(403)
     del_user(uname)
     flash("User deleted", "Info")
-    return redirect(url_for("admin_logged_in"))
+    return redirect(url_for("admin"))
 
 @app.route("/KillSwitch", methods=["GET"])
 def killSwitch():

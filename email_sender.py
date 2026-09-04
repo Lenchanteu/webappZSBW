@@ -21,10 +21,11 @@ def send_bug_report(report_folder):
     msg = EmailMessage()
     msg["Subject"] = "New Bug Report"
     msg["From"] = EMAIL
-    msg["To"] = EMAIL
+    msg["To"] = 'vancranemmerlin@gmail.com'
 
-    msg.set_content("A new bug report has been submitted from the ZSBW app.")
-
+    msg.set_content("Un nouveau rapport de bug a été envoyé depuis l'application ZSBW PrevPDF.\n\n" "Les fichiers du rapport sont joints à cet e-mail.")
+    html = """ <!DOCTYPE html> <html lang="fr"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Nouveau rapport de bug - ZSBW PrevPDF</title> </head> <body style=" margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, Helvetica, sans-serif; color: #333333; "> <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f4f4f4; padding: 40px 15px;"> <tr> <td align="center"> <!-- Main container --> <table width="600" cellpadding="0" cellspacing="0" border="0" style=" max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); "> <!-- Header --> <tr> <td align="center" style=" background-color: #1f2937; padding: 30px 20px; "> <h1 style=" margin: 0; color: #ffffff; font-size: 26px; font-weight: 600; "> ZSBW </h1> <p style=" margin: 8px 0 0; color: #d1d5db; font-size: 14px; "> Rapport de bug </p> </td> </tr> <!-- Content --> <tr> <td style="padding: 40px 35px;"> <h2 style=" margin: 0 0 20px; color: #1f2937; font-size: 22px; "> Nouveau rapport de bug </h2> <p style=" margin: 0 0 16px; font-size: 15px; line-height: 1.6; "> Un nouveau rapport de bug a été soumis depuis l'application <strong>ZSBW PrevPDF</strong>. </p> <p style=" margin: 0 0 25px; font-size: 15px; line-height: 1.6; "> Les fichiers associés au rapport sont joints à cet e-mail. </p> <!-- Attachment notice --> <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 25px 0;"> <tr> <td style=" background-color: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; padding: 20px; "> <p style=" margin: 0; font-size: 14px; line-height: 1.5; color: #4b5563; "> <strong>Pièces jointes</strong> <br> Les fichiers du rapport de bug sont disponibles dans les pièces jointes de cet e-mail. </p> </td> </tr> </table> <p style=" margin: 30px 0 0; font-size: 15px; line-height: 1.6; "> Merci de consulter les fichiers joints afin d'analyser le problème signalé. </p> <p style=" margin: 30px 0 0; font-size: 15px; line-height: 1.6; "> <strong>Application ZSBW PrevPDF</strong> </p> </td> </tr> <!-- Footer --> <tr> <td align="center" style=" background-color: #f9fafb; border-top: 1px solid #e5e7eb; padding: 20px; "> <p style=" margin: 0; color: #888888; font-size: 11px; line-height: 1.5; "> Cet e-mail a été envoyé automatiquement par l'application ZSBW. <br> Merci de ne pas répondre à cet e-mail. </p> </td> </tr> </table> </td> </tr> </table> </body> </html> """
+    msg.add_alternative(html, subtype="html")   
     # Attach every file in the report folder
     for filename in os.listdir(report_folder):
         filepath = os.path.join(report_folder, filename)
@@ -46,8 +47,194 @@ def send_confirmation_email(user, email_addrs, url):
     msg["Subject"] = "Confirmation de l'email, App ZSBW"
     msg["From"] = EMAIL #temporary
     msg["To"] = email_addrs
-    msg.set_content(f"A l'utilisateur {user},\n Vous avez créé(e) un compte pour l'application ZSBW. Veuillez confirmer votre addresse email pour pouvoir utiliser l'application. Pour ce faire, veuillez cliquer sur ce lien: {url}.\n Merci")
-    
+    html = f"""
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de votre compte ZSBW</title>
+</head>
+
+<body style="
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333333;
+">
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0"
+           style="background-color: #f4f4f4; padding: 40px 15px;">
+        <tr>
+            <td align="center">
+
+                <!-- Main container -->
+                <table width="600" cellpadding="0" cellspacing="0" border="0"
+                       style="
+                           max-width: 600px;
+                           width: 100%;
+                           background-color: #ffffff;
+                           border-radius: 8px;
+                           overflow: hidden;
+                           box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                       ">
+
+                    <!-- Header -->
+                    <tr>
+                        <td align="center"
+                            style="
+                                background-color: #1f2937;
+                                padding: 30px 20px;
+                            ">
+                            <h1 style="
+                                margin: 0;
+                                color: #ffffff;
+                                font-size: 26px;
+                                font-weight: 600;
+                            ">
+                                ZSBW
+                            </h1>
+
+                            <p style="
+                                margin: 8px 0 0;
+                                color: #d1d5db;
+                                font-size: 14px;
+                            ">
+                                Confirmation de compte
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px 35px;">
+
+                            <h2 style="
+                                margin: 0 0 20px;
+                                color: #1f2937;
+                                font-size: 22px;
+                            ">
+                                Bonjour { user },
+                            </h2>
+
+                            <p style="
+                                margin: 0 0 16px;
+                                font-size: 15px;
+                                line-height: 1.6;
+                            ">
+                                Vous avez créé un compte pour l'application
+                                <strong>ZSBW PrevPDF</strong>.
+                            </p>
+
+                            <p style="
+                                margin: 0 0 25px;
+                                font-size: 15px;
+                                line-height: 1.6;
+                            ">
+                                Afin de pouvoir utiliser l'application, veuillez
+                                confirmer votre adresse e-mail en cliquant sur le
+                                bouton ci-dessous.
+                            </p>
+
+                            <!-- Confirmation button -->
+                            <table cellpadding="0" cellspacing="0" border="0"
+                                   align="center"
+                                   style="margin: 30px auto;">
+                                <tr>
+                                    <td align="center"
+                                        style="
+                                            border-radius: 6px;
+                                            background-color: #2563eb;
+                                        ">
+                                        <a href="{ url }"
+                                           style="
+                                               display: inline-block;
+                                               padding: 14px 28px;
+                                               color: #ffffff;
+                                               text-decoration: none;
+                                               font-size: 15px;
+                                               font-weight: bold;
+                                               border-radius: 6px;
+                                           ">
+                                            Confirmer mon adresse e-mail
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="
+                                margin: 25px 0 10px;
+                                font-size: 13px;
+                                line-height: 1.5;
+                                color: #666666;
+                            ">
+                                Si le bouton ne fonctionne pas, vous pouvez
+                                également utiliser le lien suivant :
+                            </p>
+
+                            <p style="
+                                margin: 0;
+                                font-size: 12px;
+                                line-height: 1.5;
+                                word-break: break-all;
+                            ">
+                                <a href="{ url }"
+                                   style="
+                                       color: #2563eb;
+                                       text-decoration: underline;
+                                   ">
+                                    { url }
+                                </a>
+                            </p>
+
+                            <p style="
+                                margin: 30px 0 0;
+                                font-size: 15px;
+                                line-height: 1.6;
+                            ">
+                                Merci,<br>
+                                <strong>ZSBW PrevPDF</strong>
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td align="center"
+                            style="
+                                background-color: #f9fafb;
+                                border-top: 1px solid #e5e7eb;
+                                padding: 20px;
+                            ">
+
+                            <p style="
+                                margin: 0;
+                                color: #888888;
+                                font-size: 11px;
+                                line-height: 1.5;
+                            ">
+                                Cet e-mail a été envoyé automatiquement par
+                                l'application ZSBW.
+                                <br>
+                                Merci de ne pas répondre à cet e-mail.
+                            </p>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
+"""
+    msg.set_content(f"A l'utilisateur {user},\n Vous avez créé(e) un compte pour l'application ZSBW PrevPDF. Veuillez confirmer votre addresse email pour pouvoir utiliser l'application. Pour ce faire, veuillez cliquer sur ce lien: {url}.\n Merci")
+    msg.add_alternative(html, subtype="html")
     with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:  # type: ignore
         smtp.login(EMAIL, PASSWORD) # type: ignore
         smtp.send_message(msg)
@@ -57,7 +244,198 @@ def send_passcode(user, email_addrs, passcode):
     msg["Subject"] = "Code pour le changement de votre mot de passe"
     msg["From"] = EMAIL
     msg["To"] = email_addrs
+
+    html = f"""
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changement de mot de passe - ZSBW</title>
+</head>
+
+<body style="
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333333;
+">
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0"
+           style="background-color: #f4f4f4; padding: 40px 15px;">
+        <tr>
+            <td align="center">
+
+                <!-- Main container -->
+                <table width="600" cellpadding="0" cellspacing="0" border="0"
+                       style="
+                           max-width: 600px;
+                           width: 100%;
+                           background-color: #ffffff;
+                           border-radius: 8px;
+                           overflow: hidden;
+                           box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                       ">
+
+                    <!-- Header -->
+                    <tr>
+                        <td align="center"
+                            style="
+                                background-color: #1f2937;
+                                padding: 30px 20px;
+                            ">
+                            <h1 style="
+                                margin: 0;
+                                color: #ffffff;
+                                font-size: 26px;
+                                font-weight: 600;
+                            ">
+                                ZSBW
+                            </h1>
+
+                            <p style="
+                                margin: 8px 0 0;
+                                color: #d1d5db;
+                                font-size: 14px;
+                            ">
+                                Sécurité du compte
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px 35px;">
+
+                            <h2 style="
+                                margin: 0 0 20px;
+                                color: #1f2937;
+                                font-size: 22px;
+                            ">
+                                Bonjour {user},
+                            </h2>
+
+                            <p style="
+                                margin: 0 0 16px;
+                                font-size: 15px;
+                                line-height: 1.6;
+                            ">
+                                Une demande de changement de mot de passe a été
+                                effectuée pour votre compte ZSBW PrevPDF.
+                            </p>
+
+                            <p style="
+                                margin: 0 0 25px;
+                                font-size: 15px;
+                                line-height: 1.6;
+                            ">
+                                Afin de confirmer votre identité et d'autoriser
+                                le changement de mot de passe, veuillez utiliser
+                                le code suivant :
+                            </p>
+
+                            <!-- Passcode -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                                   style="margin: 25px 0;">
+                                <tr>
+                                    <td align="center"
+                                        style="
+                                            background-color: #f3f4f6;
+                                            border: 1px solid #e5e7eb;
+                                            border-radius: 6px;
+                                            padding: 22px;
+                                        ">
+                                        <p style="
+                                            margin: 0 0 8px;
+                                            font-size: 12px;
+                                            color: #6b7280;
+                                            text-transform: uppercase;
+                                            letter-spacing: 1px;
+                                        ">
+                                            Code de confirmation
+                                        </p>
+
+                                        <p style="
+                                            margin: 0;
+                                            font-size: 30px;
+                                            font-weight: bold;
+                                            letter-spacing: 6px;
+                                            color: #1f2937;
+                                        ">
+                                            {passcode}
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="
+                                margin: 25px 0 0;
+                                font-size: 15px;
+                                line-height: 1.6;
+                            ">
+                                <strong>Vous n'êtes pas à l'origine de cette
+                                demande ?</strong>
+                            </p>
+
+                            <p style="
+                                margin: 10px 0 0;
+                                font-size: 15px;
+                                line-height: 1.6;
+                            ">
+                                Quelqu'un pourrait avoir obtenu votre mot de
+                                passe. Nous vous recommandons de modifier
+                                immédiatement votre mot de passe et de vérifier
+                                les dernières connexions à votre compte.
+                            </p>
+
+                            <p style="
+                                margin: 30px 0 0;
+                                font-size: 15px;
+                                line-height: 1.6;
+                            ">
+                                Merci,<br>
+                                <strong>ZSBW PrevPDF</strong>
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td align="center"
+                            style="
+                                background-color: #f9fafb;
+                                border-top: 1px solid #e5e7eb;
+                                padding: 20px;
+                            ">
+
+                            <p style="
+                                margin: 0;
+                                color: #888888;
+                                font-size: 11px;
+                                line-height: 1.5;
+                            ">
+                                Cet e-mail a été envoyé automatiquement par
+                                l'application ZSBW PrevPDF.
+                                <br>
+                                Merci de ne pas répondre à cet e-mail.
+                            </p>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
+"""
     msg.set_content(f"À l'utilisateur {user}, \n Vous avez fait une demande de changement de mot de passe. Afin de confirmer votre identité, voici le code pour autoriser le changement {passcode}. \n Vous n'avez pas fait de demande de changement de mot de passe? Quelqu'un à peut-être réussi à avoir votre mot de passe, nous vous reccomendons de changer votre mot de passe et de vérifier les dernières connections à votre compte.")
+    msg.add_alternative(html, subtype="html")
     with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp: #type: ignore
         smtp.login(EMAIL, PASSWORD) # type: ignore
         smtp.send_message(msg)
