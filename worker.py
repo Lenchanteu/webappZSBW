@@ -2,10 +2,10 @@
 #Author: Merlin Van Cranem 
 #Contact: vancranemmerlin@gmail.com
 #https://github.com/Lenchanteu
-#Last modifications: 02/09/2026 by Merlin Van Cranem
+#Last modifications: 04/09/2026 by Merlin Van Cranem
 from pdf_maker import convert_to_pdf
 from docxtpl import DocxTemplate
-from email_sender import send_PDF_to_people
+from email_sender import send_PDF_to_brgmstr, send_PDF_to_responsable
 import email_config
 EMAILS = email_config.EMAILS
 
@@ -24,7 +24,7 @@ def generate_report_job(job_id, data, template, output_docx, output_pdf, jobs, c
                 raise Exception("User somehow entered a wrong commune in rapport generation.")
             
             email = EMAILS[commune]
-            send_PDF_to_people(email, output_pdf)
+            send_PDF_to_brgmstr(email, output_pdf)
         
         jobs[job_id]["status"] = "done"
         jobs[job_id]["file"] = output_pdf   # 🔥 important

@@ -29,7 +29,7 @@ Last modifications: 30/08/2026 by Merlin Van Cranem -->
                                 <td>{{ file.name }}</td>
                                 <td>{{ file.size }} KB</td>
                                 <td>
-                                    <a class="button-link small" href="{{ url_for('downloads', filename=file.name) }}">
+                                    <a class="button-link small" href="{{ url_for('downloads', filename=file.name, uname=None) }}">
                                         Télécharger
                                     </a>
                                     <a class="button-link small" href="{{ url_for('edit', report_name=file.name) }}">

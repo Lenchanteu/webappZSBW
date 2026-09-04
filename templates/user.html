@@ -1,0 +1,249 @@
+<!--Code under a source-available license. See more info in LICENSE
+Author: Merlin Van Cranem 
+Contact: vancranemmerlin@gmail.com
+https://github.com/Lenchanteu
+Last modifications: 04/09/2026 by Merlin Van Cranem -->
+
+{% extends "base.html" %}
+
+{% block title %}Utilisateur - {{ user.uname }}{% endblock %}
+
+{% block content %}
+<style>
+    .user-page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        gap: 15px;
+    }
+
+    .page-header h1 {
+        margin: 0;
+    }
+
+    .back-button {
+        display: inline-block;
+        padding: 9px 15px;
+        border-radius: 6px;
+        text-decoration: none;
+        background: #e9ecef;
+        color: #212529;
+        font-weight: 500;
+    }
+
+    .back-button:hover {
+        background: #dfe3e6;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .card h2 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: 1.25rem;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #eee;
+        gap: 20px;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #555;
+    }
+
+    .info-value {
+        text-align: right;
+        word-break: break-word;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .status-verified {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .status-unverified {
+        background: #fff3cd;
+        color: #664d03;
+    }
+
+    .action {
+        width: 100%;
+        padding: 11px 15px;
+        margin-bottom: 10px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    .action:last-child {
+        margin-bottom: 0;
+    }
+
+    .action-primary {
+        background: #0d6efd;
+        color: white;
+    }
+
+    .action-primary:hover {
+        background: #0b5ed7;
+    }
+
+    .action-warning {
+        background: #ffc107;
+        color: #212529;
+    }
+
+    .action-warning:hover {
+        background: #e0a800;
+    }
+
+    .danger-zone {
+        margin-top: 20px;
+        border: 1px solid #dc3545;
+        background: #fff5f5;
+    }
+
+    .danger-zone h2 {
+        color: #b02a37;
+    }
+
+    .action-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .action-danger:hover {
+        background: #bb2d3b;
+    }
+
+    .reports {
+        grid-column: 1 / -1;
+    }
+
+    .report-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .report-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #eee;
+        gap: 15px;
+    }
+
+    .report-item:last-child {
+        border-bottom: none;
+    }
+
+    .empty {
+        color: #777;
+        text-align: center;
+        padding: 20px;
+    }
+
+    @media (max-width: 750px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+
+        .reports {
+            grid-column: auto;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .info-row,
+        .report-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .info-value {
+            text-align: left;
+        }
+    }
+</style>
+
+<div class="user-page"> <!-- HEADER -->
+    <div class="page-header">
+        <h1>Utilisateur : {{ user.uname }}</h1>
+        <a href="{{ url_for('admin') }}" class="back-button"> ← Retour à
+            l'administration </a>
+    </div>
+    <div class="grid">
+        <div class="card">
+            <h2>Informations du compte</h2>
+            <div class="info-row"> <span class="info-label">Nom d'utilisateur</span> <span class="info-value"> {{
+                    user.uname }} </span> </div>
+            <div class="info-row"> <span class="info-label">Adresse e-mail</span> <span class="info-value"> {{
+                    user.email }} </span> </div>
+            <div class="info-row"> <span class="info-label">Compte vérifié</span> <span class="info-value"> {% if
+                    user.confirmation %} <span class="status status-verified"> Vérifié </span> {% else %} <span
+                        class="status status-unverified"> Non vérifié </span> {% endif %} </span> </div>
+            <div class="info-row"> <span class="info-label">Dernière adresse IP</span> <span class="info-value"> {{
+                    user.last_ip or "Inconnue" }} </span> </div>
+        </div>
+
+        <div class="card reports">
+            <h2>Rapports</h2> {% if rapports %} <ul class="report-list"> {% for rapport in rapports %} <li
+                    class="report-item"> <span> {{ rapport.name }} </span> <a
+                        href="{{ url_for('downloads', uname=user.uname, filename=rapport.name ) }}"> Télécharger </a> </li> {% endfor %} </ul> {% else %} <div
+                class="empty"> Aucun rapport trouvé pour cet utilisateur. </div> {% endif %}
+        </div>
+        <div class="card danger-zone">
+            <h2>Zone dangereuse</h2>
+            <p> Les actions suivantes sont irréversibles. </p>
+            <form method="POST" action="{{ url_for('admn_del_user', uname=user.uname) }}"> <input type="hidden"
+                    name="csrf_token" value="{{ csrf_token() }}"> <input type="hidden" name="action"
+                    value="delete_user"> <button type="submit" class="action action-danger"
+                    onclick="return confirm('Êtes-vous absolument certain de vouloir supprimer ce compte ?');">
+                    Supprimer définitivement le compte </button> </form>
+        </div>
+    </div>
+</div> {% endblock %}

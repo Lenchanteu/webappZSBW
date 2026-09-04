@@ -2,7 +2,7 @@
 #Author: Merlin Van Cranem 
 #Contact: vancranemmerlin@gmail.com
 #https://github.com/Lenchanteu
-#Last modifications: 03/09/2026 by Merlin Van Cranem
+#Last modifications: 04/09/2026 by Merlin Van Cranem
 #------------------- IMPORTS ------------------
 import json
 
@@ -496,11 +496,13 @@ def start_report():
     name = request.form.get("concerne")
     commune = request.form.get("commune")
     send_to_bourg = request.form.get("copie_bourgmestre")
+    send_to_people = request.form.get("copie_manifestation")
+    email_responsable = request.form.get("email_envoi_rapport")
     status = request.form.get("V_fin")
     if not status:
         send_to_bourg = False
-    
-    
+    if not status:
+        send_to_people = False
 
     OUTPUT_DOCX = os.path.join(user_dir, f"rapport_pour_{name}.docx")
     OUTPUT_PDF = os.path.join(user_dir, f"rapport_pour_{name}.pdf")
@@ -580,12 +582,13 @@ def myfiles():
 
     return render_template("myfiles.html", files=files)
 
-@app.route("/downloads/<filename>")
-def downloads(filename):
+@app.route("/downloads/<uname>/<filename>")
+def downloads(filename, uname):
     if not session.get("logged_in"):
         abort(403)
-
-    user_folder = os.path.join(DEFAULT_FILE_PATH, session["uname"], "RAPPORTS")
+    if uname == None:
+        uname = session["uname"]
+    user_folder = os.path.join(DEFAULT_FILE_PATH, uname, "RAPPORTS")
 
     # Prevent directory traversal attacks
     filepath = os.path.abspath(os.path.join(user_folder, filename))
@@ -678,7 +681,6 @@ def admin_login():
         return render_template("admin_login.html")
     
     code = request.form.get("code", "None")
-    current_app.logger.debug(f"Received: {repr(code)}")
     admin_password_hash = os.getenv('ADMIN_PASSWORD_HASH', '')
     if verify_admin_password(code, admin_password_hash):
         session["admin_logged_in"] = True
@@ -700,13 +702,24 @@ def admin():
     except FileNotFoundError:
         logs = "No log file found."
 
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+
+    cur.execute("SELECT uname FROM credentials")
+    usersname  = [row[0] for row in cur.fetchall()]
+    users = []
+    for user in usersname:
+        users.append({
+            "name": user
+        })
+    
     if request.method == "POST":
         form_id = request.form.get("form_id")
         if form_id == "comm":
             code = request.form.get("code", "")
-            args = args = {
+            args = {
     "user": request.form.get("args", "")
-}
+            }
 
             try:
                 func = dispatchCommands(COMMAND_TABLE, code, args)
@@ -728,9 +741,50 @@ def admin():
         # Reload the log after the command executes
         with open(LOG_FILE, "r", encoding="utf-8") as f:
             logs = f.read()
+    
+    return render_template("admin.html", logs=logs, users=users)
+@app.route("/user/<uname>")
+def user(uname):
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
 
-    return render_template("admin.html", logs=logs)
+    cur.execute("SELECT * FROM credentials WHERE uname=?", (uname,))
+    user_data = cur.fetchone()
+    user = {
+    "uname": user_data[0],
+    "email": user_data[2],
+    "confirmation": user_data[3],
+    "last_ip": user_data[4]
+}
+    user_folder = os.path.join(DEFAULT_FILE_PATH, uname, "RAPPORTS")
 
+    if not os.path.exists(user_folder):
+        current_app.logger.info(f"created a new user folder for user {session['uname']} while viewing files at /user.")
+        os.makedirs(user_folder)
+
+    files = []
+
+    for file in os.listdir(user_folder):
+        if file.lower().endswith(".pdf"):
+            full_path = os.path.join(user_folder, file)
+
+            files.append({
+                "name": file,
+                "size": round(os.path.getsize(full_path) / 1024, 1),   # KB
+                "modified": os.path.getmtime(full_path)
+            })
+
+    # Sort newest first
+    files.sort(key=lambda x: x["modified"], reverse=True)
+
+    
+    return render_template("user.html", user=user, rapports=files)
+
+@app.route("/admn_del_user/<uname>")
+def admn_del_user(uname):
+    del_user(uname)
+    flash("User deleted", "Info")
+    return redirect(url_for("admin_logged_in"))
 
 @app.route("/KillSwitch", methods=["GET"])
 def killSwitch():

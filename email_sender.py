@@ -2,7 +2,7 @@
 #Author: Merlin Van Cranem 
 #Contact: vancranemmerlin@gmail.com
 #https://github.com/Lenchanteu
-#Last modifications: 02/09/2026 by Merlin Van Cranem
+#Last modifications: 04/09/2026 by Merlin Van Cranem
 #------------IMPORTS------------
 import smtplib
 import os
@@ -62,7 +62,7 @@ def send_passcode(user, email_addrs, passcode):
         smtp.login(EMAIL, PASSWORD) # type: ignore
         smtp.send_message(msg)
 
-def send_PDF_to_people(email_addrs, file):
+def send_PDF_to_brgmstr(email_addrs, file):
     filename = os.path.splitext(os.path.basename(file))
     filename = filename[0][13:]
     msg = EmailMessage()
@@ -119,21 +119,6 @@ def send_PDF_to_people(email_addrs, file):
                                 <strong>rapport de cette visite</strong>.
                             </p>
 
-                            <!-- Attachment notice -->
-                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
-                                   style="background-color: #f7f8fa; border-left: 4px solid #555555; margin: 25px 0;">
-                                <tr>
-                                    <td style="padding: 15px 18px;">
-                                        <div style="font-size: 14px; font-weight: bold; color: #333333;">
-                                            Rapport de prévention incendie
-                                        </div>
-                                        <div style="font-size: 13px; color: #666666; margin-top: 5px;">
-                                            Le document est joint à ce courriel au format PDF.
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-
                             <p style="font-size: 15px; line-height: 1.7; margin: 25px 0 0 0;">
                                 Veuillez agréer, Madame la Bourgmestre, Monsieur le Bourgmestre,
                                 l'expression de nos salutations les plus distinguées.
@@ -167,6 +152,113 @@ Dans le cadre de la prévention incendie, la zone de secours du Brabant Wallon a
 Vous pourrez trouver le rapport de cette visite attaché à cet email. \n
 Veuillez agréer, Madame la Bourgmestre, Monsieur le Bourgmestre, nos salutations les plus distinguées. \n
 Ce message a été généré automatiquement par l'application ZSBW PrevPDF. """
+    msg.set_content(txt_msg)
+    msg.add_alternative(html_msg, subtype="html")
+    with open(file, "rb") as f:
+        pdf_data = f.read()
+
+    msg.add_attachment(
+        pdf_data,
+        maintype="application",
+        subtype="pdf",
+        filename=os.path.basename(file)
+    )
+    with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp: #type:ignore
+        smtp.login(EMAIL, PASSWORD) #type:ignore
+        smtp.send_message(msg)
+
+
+def send_PDF_to_responsable(email_addrs, file):
+    filename = os.path.splitext(os.path.basename(file))
+    filename = filename[0][13:]
+    msg = EmailMessage()
+    msg["Subject"] = "Rapport de prévention incendie concernant " + filename
+    msg["From"] = EMAIL
+    msg["To"] = email_addrs
+    html_msg = """
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport de prévention incendie</title>
+</head>
+
+<body style="margin: 0; padding: 0; background-color: #f4f5f7; font-family: Arial, Helvetica, sans-serif; color: #333333;">
+
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f4f5f7;">
+        <tr>
+            <td align="center" style="padding: 35px 15px;">
+
+                <!-- Main container -->
+                <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0"
+                       style="max-width: 600px; width: 100%; background-color: #ffffff; border: 1px solid #e1e4e8;">
+
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 25px 35px; border-bottom: 1px solid #e5e5e5;">
+                            <div style="font-size: 20px; font-weight: bold; color: #333333;">
+                                Zone de secours du Brabant wallon
+                            </div>
+                            <div style="font-size: 13px; color: #777777; margin-top: 5px;">
+                                Service de prévention incendie
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 35px;">
+
+                            <p style="font-size: 15px; line-height: 1.7; margin: 0 0 22px 0;">
+                                Madame, Monsieur,
+                            </p>
+
+                            <p style="font-size: 15px; line-height: 1.7; margin: 0 0 18px 0;">
+                                Dans le cadre de la prévention incendie, la Zone de secours
+                                du Brabant wallon a effectué une visite de votre
+                                <strong>installation temporaire</strong>.
+                            </p>
+
+                            <p style="font-size: 15px; line-height: 1.7; margin: 0 0 25px 0;">
+                                Vous trouverez en pièce jointe à ce courriel le
+                                <strong>rapport de cette visite</strong>.
+                            </p>
+
+                            <p style="font-size: 15px; line-height: 1.7; margin: 25px 0 0 0;">
+                                Veuillez agréer, Madame, Monsieur,
+                                l'expression de nos salutations les plus distinguées.
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 20px 35px; background-color: #f7f7f7; border-top: 1px solid #e5e5e5;">
+                            <p style="font-size: 11px; line-height: 1.5; color: #888888; margin: 0;">
+                                Ce message a été généré automatiquement par l'application
+                                <strong>ZSBW PrevPDF</strong>.
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
+"""
+    txt_msg = """
+Madame, Monsieur, \n
+Dans le cadre de la prévention incendie, la zone de secours du Brabant Wallon a fait une visite sur votre implémentation temporaire. \n
+Vous pourrez trouver le rapport de cette visite attaché à cet email. \n
+Veuillez agréer, Madame, Monsieur, nos salutations les plus distinguées. \n
+Ce message a été généré automatiquement par l'application ZSBW PrevPDF. """
+
     msg.set_content(txt_msg)
     msg.add_alternative(html_msg, subtype="html")
     with open(file, "rb") as f:

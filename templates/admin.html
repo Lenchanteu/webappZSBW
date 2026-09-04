@@ -2,7 +2,7 @@
 Author: Merlin Van Cranem 
 Contact: vancranemmerlin@gmail.com
 https://github.com/Lenchanteu
-Last modifications: 30/08/2026 by Merlin Van Cranem -->
+Last modifications: 04/09/2026 by Merlin Van Cranem -->
 {% extends "base.html" %}
 
 {% block title %}Administration{% endblock %}
@@ -34,7 +34,7 @@ Last modifications: 30/08/2026 by Merlin Van Cranem -->
     setInterval(updateConsole, 1000);
 </script>
 
-<button id="KillServer">Arrêt d'urgence du serveur</button>
+
 
 <h2>Commandes</h2>
 
@@ -65,6 +65,40 @@ Last modifications: 30/08/2026 by Merlin Van Cranem -->
         white-space:pre-wrap;
     "
     id="console">{{ logs }}</pre>
+
+<h2>Utilisateurs</h2>
+
+{% if users %}
+            <div class="table-wrapper">
+                <table class="file-table">
+                    <thead>
+                        <tr>
+                            <th>Nom du fichier</th>
+                            <th>Taille</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.name }}</td>
+                                <td>
+                                    <a class="button-link small" href="{{ url_for('user', uname=user.name) }}">
+                                        Plus d'infos
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>Aucun utilisateurs trouvé pour le moment.</p>
+            </div>
+        {% endif %}
+
+    <button id="KillServer">Arrêt d'urgence du serveur</button>
 
 {% endblock %}
 
