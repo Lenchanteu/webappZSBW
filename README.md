@@ -80,4 +80,4 @@ Ce programme a été dévellopé en Belgique, dans l'Union Européenne. Conform�
 
 Ce programme est à code source disponible. Toute personne peut utiliser, modifier et repartager le programme à condition de créditer l'auteur de manière appropriée. Ce programme ne peut pas être vendu sans la permission explicite de l'auteur.
 
-[ZSBW PrevPDF](https://github.com/Lenchanteu/ZSBW-PrevPDF) © 2026 par [Merlin Van Cranem](https://github.com/Lenchanteu) est sous une licence à code source disponible. [Plus d'inforamtions](https://github.com/Lenchanteu/ZSBW-PrevPDF/LICENSE.md).
+[ZSBW PrevPDF](https://github.com/Lenchanteu/ZSBW-PrevPDF) © 2026 par [Merlin Van Cranem](https://github.com/Lenchanteu) est sous une licence à code source disponible. [Plus d'informations](https://github.com/Lenchanteu/ZSBW-PrevPDF/LICENSE.md).
